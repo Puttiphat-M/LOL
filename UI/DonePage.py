@@ -26,9 +26,8 @@ class DonePage(QWidget):
 
         self.qr = QLabel()
         self.qr.setStyleSheet("background-color: transparent;")
-        # logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/QrCode.png"))
 
-        self.qr_image = self.lotus_system.getQR()
+        # self.qr_image = self.lotus_system.getQR()
         self.qr.setPixmap(logo_pixmap)
         self.qr.setAlignment(Qt.AlignCenter)
 
@@ -55,7 +54,7 @@ class DonePage(QWidget):
                         ''')
 
         # self.count_label = QLabel(str(self.bottle_count))
-        self.count_label = QLabel("0")
+        self.count_label = QLabel(str(self.lotus_system.bottle))
         self.count_label.setFont(QFont("Lotuss Smart HL", 30))
         self.count_label.setStyleSheet('''
                                     QLabel {

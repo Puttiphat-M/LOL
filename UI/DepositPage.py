@@ -44,7 +44,7 @@ class DepositPage(QWidget):
 
         bottle_logo = QLabel()
         bottle_logo.setStyleSheet("background-color: transparent;")
-        bottle_pixmap = QPixmap("bottle.png")
+        bottle_pixmap = QPixmap(os.path.join(script_dir, u"../resources/bottle.png"))
         bottle_logo.setPixmap(bottle_pixmap)
 
         # increase_button = QPushButton("+")

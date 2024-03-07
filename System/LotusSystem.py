@@ -1,4 +1,6 @@
 import sys
+import threading
+
 import serial
 from PySide6.QtWidgets import QApplication
 
@@ -8,14 +10,10 @@ import UI.DonePage as DonePage
 import UI.DonatePage as DonatePage
 from QRGenerator import QRGenerator
 from PySide6.QtCore import QObject, Signal
-
-from mm import UserInput
+import Encrypt as encrypt
 
 
 class LotusSystem(QObject):
-    # bottle = 0
-    # page = None
-    # __instance = None
     bottleChanged = Signal(int)
 
     def __init__(self):
@@ -41,18 +39,13 @@ class LotusSystem(QObject):
         self.changePage()
         if page == "StartPage":  # Check if the page is not DepositPage
             self.bottle = 0
-            print(self.bottle)
 
     def changePage(self):
         if self.page == "StartPage":
             self.__current = StartPage(self)
         elif self.page == "DepositPage":
             self.__current = DepositPage.DepositPage(self)
-            user_input = UserInput.get_input()
-            new_value = int(user_input)  # Convert input to integer
-
-            # Set the bottle count
-            self.set_bottle(new_value)
+            threading.Thread(target=self.get_user_input).start()
         elif self.page == "DonePage":
             self.__current = DonePage.DonePage(self)
         elif self.page == "DonatePage":
@@ -67,7 +60,7 @@ class LotusSystem(QObject):
     #     return LotusSystem.__instance
 
     def getQR(self):
-        # ecryptBottle = self.encrypt(LotusSystem.bottle)
+        ecryptBottle = encrypt.Encrypt().encrypt(str(self.bottle))
         # QRGenerator.generateQR(encryptBottle)
         return QRGenerator.generateQR
 
@@ -75,11 +68,20 @@ class LotusSystem(QObject):
         self.bottle = bottle
         self.bottleChanged.emit(bottle)
 
+    def get_user_input(self):
+        while self.page == "DepositPage":
+            user_input = input("Enter value: ")
+            if user_input.lower() == "exit":
+                break
+            try:
+                new_value = int(user_input)
+                self.set_bottle(new_value)
+            except ValueError:
+                print("Invalid input. Please enter an integer value.")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     lotus_system = LotusSystem()
     lotus_system.start()
-    # lotus_system.setPage("DepositPage")  # Simulate moving to the DepositPage
-    # lotus_system.set_bottle(5)  # Simulate 5 bottles deposited
     sys.exit(app.exec())
