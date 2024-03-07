@@ -41,17 +41,18 @@ class LotusSystem(QObject):
         self.changePage()
         if page == "StartPage":  # Check if the page is not DepositPage
             self.bottle = 0
+            print(self.bottle)
 
     def changePage(self):
         if self.page == "StartPage":
             self.__current = StartPage(self)
         elif self.page == "DepositPage":
             self.__current = DepositPage.DepositPage(self)
-            # user_input = UserInput.get_input()
-            # new_value = int(user_input)  # Convert input to integer
-            #
-            # # Set the bottle count
-            # self.set_bottle(new_value)
+            user_input = UserInput.get_input()
+            new_value = int(user_input)  # Convert input to integer
+
+            # Set the bottle count
+            self.set_bottle(new_value)
         elif self.page == "DonePage":
             self.__current = DonePage.DonePage(self)
         elif self.page == "DonatePage":

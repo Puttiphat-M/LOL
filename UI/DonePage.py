@@ -4,12 +4,11 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 from PySide6.QtGui import QPixmap, QPainter, QFont, Qt
 
-import LotusSystem
-
 
 class DonePage(QWidget):
-    def __init__(self):
+    def __init__(self, lotus_system):
         super().__init__()
+        self.lotus_system = lotus_system
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
         # Load background image
@@ -29,7 +28,7 @@ class DonePage(QWidget):
         self.qr.setStyleSheet("background-color: transparent;")
         # logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/QrCode.png"))
 
-        self.qr_image = LotusSystem.LotusSystem.getQR()
+        self.qr_image = self.lotus_system.getQR()
         self.qr.setPixmap(logo_pixmap)
         self.qr.setAlignment(Qt.AlignCenter)
 
@@ -81,6 +80,7 @@ class DonePage(QWidget):
                                 padding: 5px; /* Adjust padding */
                             }
                         ''')
+        done_button.clicked.connect(self.reset)
 
         value_layout = QHBoxLayout()
         value_layout.addStretch(1)
@@ -127,6 +127,9 @@ class DonePage(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.drawPixmap(0, 0, self.background_pixmap)
+
+    def reset(self):
+        self.lotus_system.setPage("StartPage")
 
 
 if __name__ == "__main__":
