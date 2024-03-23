@@ -1,4 +1,3 @@
-from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 import os
 
@@ -6,9 +5,14 @@ import os
 class Encrypt:
     def __init__(self):
         load_dotenv()
-        self.key = os.getenv('KEY')
+        key = os.getenv('KEY')
+        self.n, self.e = [int(x, 16) for x in key.split(',')]
 
     def encrypt(self, bottle):
-        fernet = Fernet(self.key)
-        encrypted = fernet.encrypt(bottle.encode())
-        return encrypted
+        encrypted_message = [pow(ord(char), self.e, self.n) for char in bottle]
+        return encrypted_message
+
+
+if __name__ == "__main__":
+    encrypt = Encrypt()
+    print(encrypt.encrypt("10"))

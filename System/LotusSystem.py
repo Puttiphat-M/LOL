@@ -45,7 +45,7 @@ class LotusSystem(QObject):
             self.__current = StartPage(self)
         elif self.page == "DepositPage":
             self.__current = DepositPage.DepositPage(self)
-            threading.Thread(target=self.get_user_input).start()
+            threading.Thread(target=self.get_user_input, daemon=True).start()
         elif self.page == "DonePage":
             self.__current = DonePage.DonePage(self)
         elif self.page == "DonatePage":
@@ -62,7 +62,8 @@ class LotusSystem(QObject):
     def getQR(self):
         ecryptBottle = encrypt.Encrypt().encrypt(str(self.bottle))
         # QRGenerator.generateQR(encryptBottle)
-        return QRGenerator.generateQR
+        # return QRGenerator.generateQR
+        return ecryptBottle
 
     def set_bottle(self, bottle):
         self.bottle = bottle
@@ -70,12 +71,10 @@ class LotusSystem(QObject):
 
     def get_user_input(self):
         while self.page == "DepositPage":
-            user_input = input("Enter value: ")
-            if user_input.lower() == "exit":
-                break
+            input("Enter value: ")
             try:
-                new_value = int(user_input)
-                self.set_bottle(new_value)
+                self.bottle += 1
+                self.set_bottle(self.bottle)
             except ValueError:
                 print("Invalid input. Please enter an integer value.")
 

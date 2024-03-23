@@ -86,19 +86,19 @@ class DepositPage(QWidget):
         self.notice_layout.addWidget(notice)
 
         # timeout
-        self.timer_label = QLabel()  # Label to display the timeout count
-        self.timer_label.setFont(QFont("Lotuss Smart HL", 22, QFont.Light))
-        self.timer_label.setStyleSheet('''
-                                            QLabel {
-                                                color: rgb(0, 0, 0);
-                                                background-color: transparent;
-                                            }
-                                        ''')
-        self.timer_label.setAlignment(Qt.AlignCenter)
+        # self.timer_label = QLabel()  # Label to display the timeout count
+        # self.timer_label.setFont(QFont("Lotuss Smart HL", 22, QFont.Light))
+        # self.timer_label.setStyleSheet('''
+        #                                     QLabel {
+        #                                         color: rgb(0, 0, 0);
+        #                                         background-color: transparent;
+        #                                     }
+        #                                 ''')
+        # self.timer_label.setAlignment(Qt.AlignCenter)
 
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_timer_label)
-        self.timer.start(1000)  # Update timer label every second
+        # self.timer = QTimer(self)
+        # self.timer.timeout.connect(self.update_timer_label)
+        # self.timer.start(1000)  # Update timer label every second
 
         self.logo_label_footer = QLabel()
         logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LogoLotus 100x30.png"))
@@ -106,7 +106,7 @@ class DepositPage(QWidget):
         self.logo_label_footer.setStyleSheet("background-color: transparent;")
 
         footer_layout = QHBoxLayout()
-        footer_layout.addWidget(self.timer_label)
+        # footer_layout.addWidget(self.timer_label)
         footer_layout.addStretch(1)
         footer_layout.addWidget(self.logo_label_footer)
 
@@ -129,19 +129,19 @@ class DepositPage(QWidget):
         self.setFixedSize(640, 480)
         self.show()
 
-    def update_timer_label(self):
-        self.timeout_count -= 1  # Decrease timeout count by 1
-        if self.timeout_count <= 0:
-            self.timer_label.setText("Timeout!")  # Update label when timeout
-            self.timer.stop()  # Stop the timer
-        else:
-            self.timer_label.setText(f"Timeout: {self.timeout_count}s")
+    # def update_timer_label(self):
+    #     self.timeout_count -= 1  # Decrease timeout count by 1
+    #     if self.timeout_count <= 0:
+    #         self.timer_label.setText("Timeout!")  # Update label when timeout
+    #         self.timer.stop()  # Stop the timer
+    #     else:
+    #         self.timer_label.setText(f"Timeout: {self.timeout_count}s")
 
     @Slot(int)
     def update_bottle_value(self, bottle):
-        self.bottle_count = bottle
+        # self.bottle_count = bottle
         # if self.bottle_count < 10:  # TODO : Limited the number of bottle
-        # self.bottle_count += 1
+        self.bottle_count += 1
         self.count_label.setText(str(self.bottle_count))
         self.timeout_count = 20
         if self.notice_layout.count() == 1:

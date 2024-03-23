@@ -27,8 +27,9 @@ class DonePage(QWidget):
         self.qr = QLabel()
         self.qr.setStyleSheet("background-color: transparent;")
 
-        # self.qr_image = self.lotus_system.getQR()
-        self.qr.setPixmap(logo_pixmap)
+        self.qr_image = self.lotus_system.getQR()
+        qr_pixmap = QPixmap(os.path.join(script_dir, u"../resources/QRDemo.png"))
+        self.qr.setPixmap(qr_pixmap)
         self.qr.setAlignment(Qt.AlignCenter)
 
         qr_layout = QVBoxLayout()
@@ -44,7 +45,7 @@ class DonePage(QWidget):
         qr_widget.setLayout(qr_layout)  # Set the layout to the widget
         qr_widget.setStyleSheet("background-color: white;")  # Set the background color of the widget
 
-        info_label = QLabel("ได้รับฟอง")
+        info_label = QLabel("ได้รับขวด")
         info_label.setFont(QFont("Lotuss Smart HL", 22))
         info_label.setStyleSheet('''
                             QLabel {
