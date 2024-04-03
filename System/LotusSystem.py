@@ -1,9 +1,8 @@
 import sys
-import threading
 
-import serial
 from PySide6.QtWidgets import QApplication
 
+from MachineEvent import MachineEvent
 from UI.StartPage import StartPage
 import UI.DepositPage as DepositPage
 import UI.DonePage as DonePage
@@ -17,12 +16,10 @@ class LotusSystem(QObject):
     bottleChanged = Signal(int)
 
     def __init__(self):
-        # check if LotusSystem is already created
         super().__init__()
         self.bottle = 0
         self.page = None
-        # self.port_name = 'COM5'
-        # self.ser = serial.Serial(self.port_name, 9600)
+        self.machine_event = MachineEvent(self)
 
         # if LotusSystem.__instance is not None:
         #     raise Exception("This class is a singleton!")
@@ -37,7 +34,7 @@ class LotusSystem(QObject):
     def setPage(self,page):
         self.page = page
         self.changePage()
-        if page == "StartPage":  # Check if the page is not DepositPage
+        if page == "StartPage":
             self.bottle = 0
 
     def changePage(self):
@@ -45,7 +42,7 @@ class LotusSystem(QObject):
             self.__current = StartPage(self)
         elif self.page == "DepositPage":
             self.__current = DepositPage.DepositPage(self)
-            threading.Thread(target=self.get_user_input, daemon=True).start()
+            self.machine_event.turn_on()
         elif self.page == "DonePage":
             self.__current = DonePage.DonePage(self)
         elif self.page == "DonatePage":
@@ -65,18 +62,9 @@ class LotusSystem(QObject):
         # return QRGenerator.generateQR
         return ecryptBottle
 
-    def set_bottle(self, bottle):
-        self.bottle = bottle
-        self.bottleChanged.emit(bottle)
-
-    def get_user_input(self):
-        while self.page == "DepositPage":
-            input("Enter value: ")
-            try:
-                self.bottle += 1
-                self.set_bottle(self.bottle)
-            except ValueError:
-                print("Invalid input. Please enter an integer value.")
+    def increment_bottle(self):
+        self.bottle += 1
+        self.bottleChanged.emit(self.bottle)
 
 
 if __name__ == "__main__":

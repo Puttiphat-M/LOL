@@ -34,13 +34,13 @@ class DonatePage(QWidget):
         thankyou_layout.addWidget(thankyou_label1)
         thankyou_layout.addWidget(thankyou_label2)
 
+        widget = QWidget()  # Create a widget to contain the layout
+        widget.setLayout(thankyou_layout)
+        widget.setStyleSheet("background-color: white;")
+
         footer_layout = QHBoxLayout()
         footer_layout.addStretch(1)
         footer_layout.addWidget(self.logo_label_footer)
-
-        widget = QWidget()  # Create a widget to contain the layout
-        widget.setLayout(thankyou_layout)  # Set the layout to the widget
-        widget.setStyleSheet("background-color: white;")  # Set the background color of the widget
 
         main_layout = QVBoxLayout(self)
         main_layout.addSpacing(62)
@@ -50,7 +50,7 @@ class DonatePage(QWidget):
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.reset)
-        self.timer.start(1000)  # Update timer label every second
+        self.timer.start(1000)
 
         # Set window title and geometry
         self.setWindowTitle("Donate Page")
@@ -60,11 +60,10 @@ class DonatePage(QWidget):
         self.show()
 
     def update_background(self):
-        # Scale the background image to fit the current size of the widget
         self.background_pixmap = self.background_pixmap.scaled(self.width(), self.height() - (self.height() / 7))
 
     def reset(self):
-        self.timeout_count -= 1  # Decrease timeout count by 1
+        self.timeout_count -= 1
         if self.timeout_count <= 0:
             self.lotus_system.setPage("StartPage")
 

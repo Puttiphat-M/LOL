@@ -37,13 +37,13 @@ class DonePage(QWidget):
         qr_layout.addSpacing(15)
         qr_layout.addWidget(self.qr)
 
+        qr_widget = QWidget()  # Create a widget to contain the layout
+        qr_widget.setLayout(qr_layout)
+        qr_widget.setStyleSheet("background-color: white;")
+
         footer_layout = QHBoxLayout()
         footer_layout.addStretch(1)
         footer_layout.addWidget(self.logo_label_footer)
-
-        qr_widget = QWidget()  # Create a widget to contain the layout
-        qr_widget.setLayout(qr_layout)  # Set the layout to the widget
-        qr_widget.setStyleSheet("background-color: white;")  # Set the background color of the widget
 
         info_label = QLabel("ได้รับขวด")
         info_label.setFont(QFont("Lotuss Smart HL", 22))
@@ -54,7 +54,6 @@ class DonePage(QWidget):
                             }
                         ''')
 
-        # self.count_label = QLabel(str(self.bottle_count))
         self.count_label = QLabel(str(self.lotus_system.bottle))
         self.count_label.setFont(QFont("Lotuss Smart HL", 30))
         self.count_label.setStyleSheet('''
@@ -121,7 +120,6 @@ class DonePage(QWidget):
         self.show()
 
     def update_background(self):
-        # Scale the background image to fit the current size of the widget
         self.background_pixmap = self.background_pixmap.scaled(self.width(), self.height() - (self.height() / 7))
 
     def paintEvent(self, event):

@@ -75,9 +75,6 @@ class StartPage(QWidget):
         self.show()
 
     def deposit(self):
-        # from LotusSystem import LotusSystem
-        # LotusSystem.setPage("DepositPage")
-        # self.close()
         self.lotus_system.setPage("DepositPage")
 
     def update_background(self):

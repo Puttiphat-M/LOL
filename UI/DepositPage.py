@@ -129,14 +129,6 @@ class DepositPage(QWidget):
         self.setFixedSize(640, 480)
         self.show()
 
-    # def update_timer_label(self):
-    #     self.timeout_count -= 1  # Decrease timeout count by 1
-    #     if self.timeout_count <= 0:
-    #         self.timer_label.setText("Timeout!")  # Update label when timeout
-    #         self.timer.stop()  # Stop the timer
-    #     else:
-    #         self.timer_label.setText(f"Timeout: {self.timeout_count}s")
-
     @Slot(int)
     def update_bottle_value(self, bottle):
         # self.bottle_count = bottle
@@ -190,15 +182,9 @@ class DepositPage(QWidget):
         painter.drawPixmap(0, 0, QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg")).scaled(self.width(), self.height() - (self.height() / 7)))
 
     def donate(self):
-        # from LotusSystem import LotusSystem
-        # LotusSystem.setPage("DonatePage")
-        # self.close()
         self.lotus_system.setPage("DonatePage")
 
     def collect(self):
-        # from LotusSystem import LotusSystem
-        # LotusSystem.setPage("DonePage")
-        # self.close()
         self.lotus_system.setPage("DonePage")
 
 
