@@ -19,7 +19,7 @@ class LotusSystem(QObject):
         super().__init__()
         self.bottle = 0
         self.page = None
-        self.machine_event = MachineEvent(self)
+        # self.machine_event = MachineEvent(self)
 
         # if LotusSystem.__instance is not None:
         #     raise Exception("This class is a singleton!")
@@ -33,6 +33,8 @@ class LotusSystem(QObject):
 
     def setPage(self,page):
         self.page = page
+        if self.__current is not None:
+            self.__current.close()  # Close the old page
         self.changePage()
         if page == "StartPage":
             self.bottle = 0
@@ -42,7 +44,7 @@ class LotusSystem(QObject):
             self.__current = StartPage(self)
         elif self.page == "DepositPage":
             self.__current = DepositPage.DepositPage(self)
-            self.machine_event.turn_on()
+            # self.machine_event.turn_on()
         elif self.page == "DonePage":
             self.__current = DonePage.DonePage(self)
         elif self.page == "DonatePage":
@@ -57,10 +59,9 @@ class LotusSystem(QObject):
     #     return LotusSystem.__instance
 
     def getQR(self):
-        ecryptBottle = encrypt.Encrypt().encrypt(str(self.bottle))
-        # QRGenerator.generateQR(encryptBottle)
-        # return QRGenerator.generateQR
-        return ecryptBottle
+        encryptBottle = encrypt.Encrypt().encrypt(str(self.bottle))
+        QRGenerator.generateQR(encryptBottle)
+        return QRGenerator.generateQR
 
     def increment_bottle(self):
         self.bottle += 1

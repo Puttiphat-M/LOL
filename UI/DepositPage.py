@@ -1,7 +1,6 @@
 import os
-import sys
-from PySide6.QtCore import Qt, QTimer, Slot
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout
+from PySide6.QtCore import Qt, Slot
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout
 from PySide6.QtGui import QPixmap, QPainter, QFont
 
 
@@ -48,7 +47,7 @@ class DepositPage(QWidget):
         bottle_logo.setPixmap(bottle_pixmap)
 
         # increase_button = QPushButton("+")
-        # increase_button.clicked.connect(self.update_bottle_count)
+        # increase_button.clicked.connect(self.update_bottle_value)
         # increase_button.setStyleSheet('QPushButton { background-color: transparent; }')
 
         value_layout = QHBoxLayout()
@@ -130,7 +129,7 @@ class DepositPage(QWidget):
         self.show()
 
     @Slot(int)
-    def update_bottle_value(self, bottle):
+    def update_bottle_value(self):
         # self.bottle_count = bottle
         # if self.bottle_count < 10:  # TODO : Limited the number of bottle
         self.bottle_count += 1
@@ -186,9 +185,3 @@ class DepositPage(QWidget):
 
     def collect(self):
         self.lotus_system.setPage("DonePage")
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    ui = DepositPage()
-    sys.exit(app.exec())

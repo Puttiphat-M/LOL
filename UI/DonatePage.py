@@ -1,7 +1,6 @@
 import os
-import sys
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from PySide6.QtGui import QPixmap, QPainter, QFont
 
 
@@ -70,9 +69,3 @@ class DonatePage(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.drawPixmap(0, 0, self.background_pixmap)
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    ui = DonatePage()
-    sys.exit(app.exec())

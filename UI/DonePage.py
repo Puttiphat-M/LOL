@@ -1,7 +1,6 @@
 import os
-import sys
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 from PySide6.QtGui import QPixmap, QPainter, QFont, Qt
 
 
@@ -128,9 +127,3 @@ class DonePage(QWidget):
 
     def reset(self):
         self.lotus_system.setPage("StartPage")
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    ui = DonePage()
-    sys.exit(app.exec())
