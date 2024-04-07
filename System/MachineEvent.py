@@ -69,16 +69,12 @@ class MachineEvent:
                         self.show_notification("Please insert a bottle.")
                     print("No bottle")
 
-                elif message == "stop Program":
-                    self.pause()
-                    if self.notification_dialog and self.notification_dialog.isVisible():
-                        self.notification_dialog.close()
-                    self.master.setPage("StartPage")
-                    print("stop Program")
-
-                else:
-                    # Handle other messages
-                    print("Received unexpected message:", message)
+            if message == "stop Program":
+                self.pause()
+                if self.notification_dialog and self.notification_dialog.isVisible():
+                    self.notification_dialog.close()
+                self.master.setPage("StartPage")
+                print("stop Program")
 
     def show_notification(self, message):
         # Show the notification dialog
