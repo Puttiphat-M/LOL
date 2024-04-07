@@ -1,7 +1,8 @@
+import io
 import os
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
-from PySide6.QtGui import QPixmap, QPainter, QFont, Qt
+from PySide6.QtGui import QPixmap, QPainter, QFont, Qt, QImage
 
 
 class DonePage(QWidget):
@@ -23,13 +24,8 @@ class DonePage(QWidget):
         self.logo_label_footer.setPixmap(logo_pixmap)
         self.logo_label_footer.setStyleSheet("background-color: transparent;")
 
-        self.qr = QLabel()
+        self.qr = QLabel(self)
         self.qr.setStyleSheet("background-color: transparent;")
-
-        self.qr_image = self.lotus_system.getQR()
-        qr_pixmap = QPixmap(os.path.join(script_dir, u"../resources/QRDemo.png"))
-        self.qr.setPixmap(qr_pixmap)
-        self.qr.setAlignment(Qt.AlignCenter)
 
         qr_layout = QVBoxLayout()
         qr_layout.addWidget(qr_label)
@@ -116,6 +112,7 @@ class DonePage(QWidget):
         self.setStyleSheet("background-color: white;")
         self.setFixedSize(640, 480)
         self.update_background()
+        self.showQRCode()
         self.show()
 
     def update_background(self):
@@ -127,3 +124,21 @@ class DonePage(QWidget):
 
     def reset(self):
         self.lotus_system.setPage("StartPage")
+
+    def showQRCode(self):
+        self.qr_image = self.lotus_system.getQR()
+
+        # Convert the Pillow Image to a byte buffer
+        byte_array = io.BytesIO()
+        self.qr_image.save(byte_array, format='PNG')
+        byte_array.seek(0)
+
+        # Load the byte buffer as a QImage
+        q_image = QImage.fromData(byte_array.getvalue())
+
+        # Convert the QImage to QPixmap
+        pixmap = QPixmap.fromImage(q_image)
+
+        # Set the QPixmap to the QLabel
+        self.qr.setPixmap(pixmap)
+        self.qr.setAlignment(Qt.AlignCenter)

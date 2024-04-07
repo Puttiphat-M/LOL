@@ -47,7 +47,7 @@ class DepositPage(QWidget):
         bottle_logo.setPixmap(bottle_pixmap)
 
         # increase_button = QPushButton("+")
-        # increase_button.clicked.connect(self.update_bottle_value)
+        # increase_button.clicked.connect(self.lotus_system.increment_bottle)
         # increase_button.setStyleSheet('QPushButton { background-color: transparent; }')
 
         value_layout = QHBoxLayout()
@@ -130,8 +130,6 @@ class DepositPage(QWidget):
 
     @Slot(int)
     def update_bottle_value(self):
-        # self.bottle_count = bottle
-        # if self.bottle_count < 10:  # TODO : Limited the number of bottle
         self.bottle_count += 1
         self.count_label.setText(str(self.bottle_count))
         self.timeout_count = 20

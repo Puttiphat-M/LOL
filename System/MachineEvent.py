@@ -13,6 +13,7 @@ class CustomAlert(QDialog):
         self.setFixedSize(300, 150)
         self.message_label = QLabel(message)
         self.message_label.setAlignment(Qt.AlignCenter)
+        self.message_label.setStyleSheet("color: rgb(0, 0, 0);")
         self.message_label.setFont(QFont("Lotuss Smart HL", 18))
         layout.addWidget(self.message_label)
         ok_button = QPushButton("OK")
@@ -46,6 +47,9 @@ class MachineEvent:
     def turn_on(self):
         self.send_command(b'1')
 
+    def pause(self):
+        self.send_command(b'0')
+
     def send_command(self, command):
         self.ser.write(command)
         print("send command")
@@ -53,24 +57,28 @@ class MachineEvent:
     def read_from_arduino(self):
         if self.ser.in_waiting > 0:
             message = self.ser.readline().decode('utf-8').strip()
+            if self.master.bottle < 10:
+                if message == "has bottle":
+                    if self.notification_dialog and self.notification_dialog.isVisible():
+                        self.notification_dialog.close()
+                    print("bottle +1")
+                    self.master.increment_bottle()
 
-            if message == "has bottle":
-                if self.notification_dialog and self.notification_dialog.isVisible():
-                    self.notification_dialog.close()
-                print("bottle +1")
-                self.master.increment_bottle()
+                elif message == "No bottle":
+                    if self.master.__current is "DepositPage":
+                        self.show_notification("Please insert a bottle.")
+                    print("No bottle")
 
-            elif message == "No bottle":
-                self.show_notification("Please insert a bottle.")
+                elif message == "stop Program":
+                    self.pause()
+                    if self.notification_dialog and self.notification_dialog.isVisible():
+                        self.notification_dialog.close()
+                    self.master.setPage("StartPage")
+                    print("stop Program")
 
-            elif message == "stop Program":
-                if self.notification_dialog and self.notification_dialog.isVisible():
-                    self.notification_dialog.close()
-                self.master.setPage("StartPage")
-
-            else:
-                # Handle other messages
-                print("Received unexpected message:", message)
+                else:
+                    # Handle other messages
+                    print("Received unexpected message:", message)
 
     def show_notification(self, message):
         # Show the notification dialog

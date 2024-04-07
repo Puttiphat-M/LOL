@@ -1,7 +1,6 @@
 import sys
 
 from PySide6.QtWidgets import QApplication
-
 from MachineEvent import MachineEvent
 from UI.StartPage import StartPage
 import UI.DepositPage as DepositPage
@@ -9,7 +8,6 @@ import UI.DonePage as DonePage
 import UI.DonatePage as DonatePage
 from QRGenerator import QRGenerator
 from PySide6.QtCore import QObject, Signal
-import Encrypt as encrypt
 
 
 class LotusSystem(QObject):
@@ -19,7 +17,7 @@ class LotusSystem(QObject):
         super().__init__()
         self.bottle = 0
         self.page = None
-        # self.machine_event = MachineEvent(self)
+        self.machine_event = MachineEvent(self)
 
         # if LotusSystem.__instance is not None:
         #     raise Exception("This class is a singleton!")
@@ -44,10 +42,14 @@ class LotusSystem(QObject):
             self.__current = StartPage(self)
         elif self.page == "DepositPage":
             self.__current = DepositPage.DepositPage(self)
-            # self.machine_event.turn_on()
+            self.machine_event.turn_on()
         elif self.page == "DonePage":
+            self.machine_event.pause()
+            print("pauseeeeee")
             self.__current = DonePage.DonePage(self)
         elif self.page == "DonatePage":
+            self.machine_event.pause()
+            print("pauseeeeee")
             self.__current = DonatePage.DonatePage(self)
         else:
             self.__current = None
@@ -59,9 +61,8 @@ class LotusSystem(QObject):
     #     return LotusSystem.__instance
 
     def getQR(self):
-        encryptBottle = encrypt.Encrypt().encrypt(str(self.bottle))
-        QRGenerator.generateQR(encryptBottle)
-        return QRGenerator.generateQR
+        qr_image = QRGenerator().generateQR(self.bottle)
+        return qr_image
 
     def increment_bottle(self):
         self.bottle += 1

@@ -17,7 +17,7 @@ class StartPage(QWidget):
         # Create the bottle logo
         self.logo_label = QLabel()
         self.logo_label.setStyleSheet("background-color: transparent;")
-        logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/ProjectLogo.jpg"))
+        logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/EggLogo.png"))
         self.logo_label.setPixmap(logo_pixmap)
         self.logo_label.setAlignment(Qt.AlignCenter)
 
