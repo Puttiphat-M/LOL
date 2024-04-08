@@ -11,7 +11,6 @@ class DonatePage(QWidget):
         self.lotus_system = lotus_system
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
-        # Load background image
         self.background_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg"))
 
         thankyou_label1 = QLabel("ขอขอบคุณ")
@@ -33,7 +32,7 @@ class DonatePage(QWidget):
         thankyou_layout.addWidget(thankyou_label1)
         thankyou_layout.addWidget(thankyou_label2)
 
-        widget = QWidget()  # Create a widget to contain the layout
+        widget = QWidget()
         widget.setLayout(thankyou_layout)
         widget.setStyleSheet("background-color: white;")
 
@@ -48,10 +47,9 @@ class DonatePage(QWidget):
         main_layout.addLayout(footer_layout)
 
         self.timer = QTimer(self)
-        self.timer.timeout.connect(self.reset)
+        self.timer.timeout.connect(self.go_to_start_page_after_timeout)
         self.timer.start(1000)
 
-        # Set window title and geometry
         self.setWindowTitle("Donate Page")
         self.setStyleSheet("background-color: white;")
         self.setFixedSize(640, 480)
@@ -61,10 +59,10 @@ class DonatePage(QWidget):
     def update_background(self):
         self.background_pixmap = self.background_pixmap.scaled(self.width(), self.height() - (self.height() / 7))
 
-    def reset(self):
+    def go_to_start_page_after_timeout(self):
         self.timeout_count -= 1
         if self.timeout_count <= 0:
-            self.lotus_system.setPage("StartPage")
+            self.lotus_system.set_page("StartPage")
 
     def paintEvent(self, event):
         painter = QPainter(self)

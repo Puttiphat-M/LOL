@@ -1,5 +1,4 @@
 import os
-
 import qrcode
 import jwt
 import time
@@ -12,8 +11,8 @@ class QRGenerator:
         self.base_url = os.getenv('GEN_QR_URL')
         self.secret = os.getenv('SECRET')
 
-    def generateQR(self, bottle):
-        query_params = {'points': bottle,               # Bottle number
+    def generate_qr(self, bottle):
+        query_params = {'points': bottle,
                        'location': 'Africa',
                         'iat': time.time()}
         jwt_token = self.gen_jwt_token(query_params)
@@ -24,6 +23,6 @@ class QRGenerator:
         qr.make(fit=True)
         return qr.make_image(fill_color="black", back_color="white")
 
-    def gen_jwt_token(self, data:dict):
+    def gen_jwt_token(self, data: dict):
         token = jwt.encode(data, self.secret, algorithm='HS256')
         return token

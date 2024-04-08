@@ -11,7 +11,6 @@ class DonePage(QWidget):
         self.lotus_system = lotus_system
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
-        # Load background image
         self.background_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg"))
 
         qr_label = QLabel("กรุณาสแกน QR เพื่อสะสมขวด")
@@ -32,7 +31,7 @@ class DonePage(QWidget):
         qr_layout.addSpacing(15)
         qr_layout.addWidget(self.qr)
 
-        qr_widget = QWidget()  # Create a widget to contain the layout
+        qr_widget = QWidget()
         qr_widget.setLayout(qr_layout)
         qr_widget.setStyleSheet("background-color: white;")
 
@@ -74,7 +73,7 @@ class DonePage(QWidget):
                                 padding: 5px; /* Adjust padding */
                             }
                         ''')
-        done_button.clicked.connect(self.reset)
+        done_button.clicked.connect(self.go_to_start_page)
 
         value_layout = QHBoxLayout()
         value_layout.addStretch(1)
@@ -92,14 +91,11 @@ class DonePage(QWidget):
         right_layout.addWidget(done_button)
 
         leftright_layout = QHBoxLayout()
-        # leftright_layout.addSpacing(45)
         leftright_layout.addStretch(1)
         leftright_layout.addWidget(qr_widget)
         leftright_layout.addStretch(1)
-        # leftright_layout.addSpacing(40)
         leftright_layout.addLayout(right_layout)
         leftright_layout.addStretch(1)
-        # leftright_layout.addStretch(40)
 
         main_layout = QVBoxLayout(self)
         main_layout.addSpacing(45)
@@ -107,12 +103,11 @@ class DonePage(QWidget):
         main_layout.addStretch(1)
         main_layout.addLayout(footer_layout)
 
-        # Set window title and geometry
         self.setWindowTitle("Done Page")
         self.setStyleSheet("background-color: white;")
         self.setFixedSize(640, 480)
         self.update_background()
-        self.showQRCode()
+        self.show_qr_code()
         self.show()
 
     def update_background(self):
@@ -122,23 +117,19 @@ class DonePage(QWidget):
         painter = QPainter(self)
         painter.drawPixmap(0, 0, self.background_pixmap)
 
-    def reset(self):
-        self.lotus_system.setPage("StartPage")
+    def go_to_start_page(self):
+        self.lotus_system.set_page("StartPage")
 
-    def showQRCode(self):
-        self.qr_image = self.lotus_system.getQR()
+    def show_qr_code(self):
+        self.qr_image = self.lotus_system.get_qr()
 
-        # Convert the Pillow Image to a byte buffer
         byte_array = io.BytesIO()
         self.qr_image.save(byte_array, format='PNG')
         byte_array.seek(0)
 
-        # Load the byte buffer as a QImage
         q_image = QImage.fromData(byte_array.getvalue())
 
-        # Convert the QImage to QPixmap
         pixmap = QPixmap.fromImage(q_image)
 
-        # Set the QPixmap to the QLabel
         self.qr.setPixmap(pixmap)
         self.qr.setAlignment(Qt.AlignCenter)

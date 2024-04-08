@@ -73,12 +73,10 @@ class MachineEvent:
                 self.pause()
                 if self.notification_dialog and self.notification_dialog.isVisible():
                     self.notification_dialog.close()
-                self.master.setPage("StartPage")
+                self.master.set_page("StartPage")
                 print("stop Program")
 
     def show_notification(self, message):
-        # Show the notification dialog
         self.notification_dialog = CustomAlert(message)
         self.notification_dialog.setWindowFlags(self.notification_dialog.windowFlags() | Qt.WindowStaysOnTopHint)
-        # Ensure the dialog is non-blocking
         self.notification_dialog.show()

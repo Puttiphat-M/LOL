@@ -32,7 +32,7 @@ class DepositPage(QWidget):
                             }
                         ''')
 
-        self.count_label = QLabel(str(self.bottle_count))  # Display the current count
+        self.count_label = QLabel(str(self.bottle_count))
         self.count_label.setFont(QFont("Lotuss Smart HL", 70))
         self.count_label.setStyleSheet('''
                                     QLabel {
@@ -84,28 +84,12 @@ class DepositPage(QWidget):
         self.notice_layout = QHBoxLayout()
         self.notice_layout.addWidget(notice)
 
-        # timeout
-        # self.timer_label = QLabel()  # Label to display the timeout count
-        # self.timer_label.setFont(QFont("Lotuss Smart HL", 22, QFont.Light))
-        # self.timer_label.setStyleSheet('''
-        #                                     QLabel {
-        #                                         color: rgb(0, 0, 0);
-        #                                         background-color: transparent;
-        #                                     }
-        #                                 ''')
-        # self.timer_label.setAlignment(Qt.AlignCenter)
-
-        # self.timer = QTimer(self)
-        # self.timer.timeout.connect(self.update_timer_label)
-        # self.timer.start(1000)  # Update timer label every second
-
         self.logo_label_footer = QLabel()
         logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LogoLotus 100x30.png"))
         self.logo_label_footer.setPixmap(logo_pixmap)
         self.logo_label_footer.setStyleSheet("background-color: transparent;")
 
         footer_layout = QHBoxLayout()
-        # footer_layout.addWidget(self.timer_label)
         footer_layout.addStretch(1)
         footer_layout.addWidget(self.logo_label_footer)
 
@@ -121,7 +105,7 @@ class DepositPage(QWidget):
         main_layout.addStretch(1)
         main_layout.addLayout(footer_layout)
 
-        self.lotus_system.bottleChanged.connect(self.update_bottle_value)
+        self.lotus_system.bottleChanged.connect(self.increase_bottle_count)
 
         self.setWindowTitle("Deposit Page")
         self.setStyleSheet("background-color: white;")
@@ -129,7 +113,7 @@ class DepositPage(QWidget):
         self.show()
 
     @Slot(int)
-    def update_bottle_value(self):
+    def increase_bottle_count(self):
         self.bottle_count += 1
         self.count_label.setText(str(self.bottle_count))
         self.timeout_count = 20
@@ -153,7 +137,7 @@ class DepositPage(QWidget):
                         border-radius: 25px;
                     }
                 ''')
-        collect_button.clicked.connect(self.collect)
+        collect_button.clicked.connect(self.go_to_done_page)
 
         donate_button = QPushButton("บริจาค")
         donate_button.setFont(QFont("Lotuss Smart HL", 22, QFont.Bold))
@@ -165,7 +149,7 @@ class DepositPage(QWidget):
                                 border-radius: 25px;
                             }
                         ''')
-        donate_button.clicked.connect(self.donate)
+        donate_button.clicked.connect(self.go_to_donate_page)
 
         self.notice_layout.addStretch(1)
         self.notice_layout.addWidget(collect_button)
@@ -178,8 +162,8 @@ class DepositPage(QWidget):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         painter.drawPixmap(0, 0, QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg")).scaled(self.width(), self.height() - (self.height() / 7)))
 
-    def donate(self):
-        self.lotus_system.setPage("DonatePage")
+    def go_to_donate_page(self):
+        self.lotus_system.set_page("DonatePage")
 
-    def collect(self):
-        self.lotus_system.setPage("DonePage")
+    def go_to_done_page(self):
+        self.lotus_system.set_page("DonePage")
