@@ -52,7 +52,6 @@ class MachineEvent:
 
     def send_command(self, command):
         self.ser.write(command)
-        print("send command")
 
     def read_from_arduino(self):
         if self.ser.in_waiting > 0:

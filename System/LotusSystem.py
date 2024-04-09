@@ -1,7 +1,7 @@
 import sys
 
 from PySide6.QtWidgets import QApplication
-# from MachineEvent import MachineEvent
+from MachineEvent import MachineEvent
 from UI.StartPage import StartPage
 import UI.DepositPage as DepositPage
 import UI.DonePage as DonePage
@@ -11,20 +11,19 @@ from PySide6.QtCore import QObject, Signal
 
 
 class LotusSystem(QObject):
-    bottleChanged = Signal(int)
+    bottle_changed = Signal(int)
     __instance = None
+    page = None
+    bottle = 0
 
     def __init__(self):
         super().__init__()
-        self.__current = None
-        self.bottle = 0
-        self.page = None
         if LotusSystem.__instance is not None:
             raise Exception("This class is a singleton!")
         else:
             LotusSystem.__instance = self
             self.__current = None
-        # self.machine_event = MachineEvent(self)
+        LotusSystem.machine_event = MachineEvent(self)
 
     @staticmethod
     def get_instance():
@@ -32,46 +31,51 @@ class LotusSystem(QObject):
             LotusSystem()
         return LotusSystem.__instance
 
-    def start(self):
-        self.page = "StartPage"
-        self.__current = StartPage(self)
+    @staticmethod
+    def start():
+        LotusSystem.page = "StartPage"
+        LotusSystem.__current = StartPage()
 
-    def set_page(self, page):
-        self.page = page
-        if self.__current is not None:
-            self.__current.close()
-        self.change_page()
+    @staticmethod
+    def set_page(page):
+        LotusSystem.page = page
+        LotusSystem.change_page()
         if page == "StartPage":
-            self.bottle = 0
+            LotusSystem.bottle = 0
 
-    def change_page(self):
-        if self.page == "StartPage":
-            self.__current = StartPage(self)
-        elif self.page == "DepositPage":
-            self.__current = DepositPage.DepositPage(self)
-            # self.machine_event.turn_on()
-        elif self.page == "DonePage":
-            # self.machine_event.pause()
-            print("pauseeeeee")
-            self.__current = DonePage.DonePage(self)
-        elif self.page == "DonatePage":
-            # self.machine_event.pause()
-            print("pauseeeeee")
-            self.__current = DonatePage.DonatePage(self)
+    @staticmethod
+    def change_page():
+        if LotusSystem.page == "StartPage":
+            LotusSystem.__current = StartPage()
+        elif LotusSystem.page == "DepositPage":
+            LotusSystem.__current = DepositPage.DepositPage()
+            LotusSystem.machine_event.turn_on()
+        elif LotusSystem.page == "DonePage":
+            LotusSystem.machine_event.pause()
+            LotusSystem.__current = DonePage.DonePage()
+        elif LotusSystem.page == "DonatePage":
+            LotusSystem.machine_event.pause()
+            LotusSystem.__current = DonatePage.DonatePage()
         else:
-            self.__current = None
+            LotusSystem.__current = None
 
-    def get_qr(self):
-        qr_image = QRGenerator().generate_qr(self.bottle)
+    @staticmethod
+    def get_qr():
+        qr_image = QRGenerator().generate_qr(LotusSystem.bottle)
         return qr_image
 
-    def increment_bottle(self):
-        self.bottle += 1
-        self.bottleChanged.emit(self.bottle)
+    @staticmethod
+    def increment_bottle():
+        LotusSystem.bottle += 1
+        LotusSystem.get_instance().bottle_changed.emit(LotusSystem.bottle)
+
+    @staticmethod
+    def get_bottle_count():
+        return LotusSystem.bottle
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    lotus_system = LotusSystem()
+    app = QApplication([])
+    lotus_system = LotusSystem.get_instance()
     lotus_system.start()
     sys.exit(app.exec())

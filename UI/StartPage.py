@@ -5,9 +5,8 @@ from PySide6.QtGui import QPixmap, QPainter, QFont
 
 
 class StartPage(QWidget):
-    def __init__(self, lotus_system):
+    def __init__(self):
         super().__init__()
-        self.lotus_system = lotus_system
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
         self.background_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg"))
@@ -68,12 +67,14 @@ class StartPage(QWidget):
         self.update_background()
         self.show()
 
-    def go_to_deposit_page(self):
-        self.lotus_system.set_page("DepositPage")
-
     def update_background(self):
         self.background_pixmap = self.background_pixmap.scaled(self.width(), self.height() - (self.height() / 7))
 
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.drawPixmap(0, 0, self.background_pixmap)
+
+    def go_to_deposit_page(self):
+        from System.LotusSystem import LotusSystem
+        LotusSystem.set_page("DepositPage")
+        self.close()

@@ -4,14 +4,20 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLa
 from PySide6.QtGui import QPixmap, QPainter, QFont
 
 
+def go_to_donate_page():
+    from System.LotusSystem import LotusSystem
+    LotusSystem.set_page("DonatePage")
+
+
+def go_to_done_page():
+    from System.LotusSystem import LotusSystem
+    LotusSystem.set_page("DonePage")
+
+
 class DepositPage(QWidget):
-    def __init__(self, lotus_system):
+    def __init__(self):
         super().__init__()
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        self.lotus_system = lotus_system
-
-        self.bottle_count = 0
-        self.timeout_count = 20
 
         info_label = QLabel("หากท่านมี 10 ขวด จะสามารถแลกไข่ได้ 1 ฟอง")
         info_label.setFont(QFont("Lotuss Smart HL", 22, QFont.Light))
@@ -32,7 +38,8 @@ class DepositPage(QWidget):
                             }
                         ''')
 
-        self.count_label = QLabel(str(self.bottle_count))
+        from System.LotusSystem import LotusSystem
+        self.count_label = QLabel(str(LotusSystem.get_bottle_count()))
         self.count_label.setFont(QFont("Lotuss Smart HL", 70))
         self.count_label.setStyleSheet('''
                                     QLabel {
@@ -46,10 +53,6 @@ class DepositPage(QWidget):
         bottle_pixmap = QPixmap(os.path.join(script_dir, u"../resources/bottle.png"))
         bottle_logo.setPixmap(bottle_pixmap)
 
-        # increase_button = QPushButton("+")
-        # increase_button.clicked.connect(self.lotus_system.increment_bottle)
-        # increase_button.setStyleSheet('QPushButton { background-color: transparent; }')
-
         value_layout = QHBoxLayout()
         value_layout.addStretch(1)
         value_layout.addWidget(X_symbol)
@@ -57,8 +60,6 @@ class DepositPage(QWidget):
         value_layout.addWidget(self.count_label)
         value_layout.addSpacing(10)
         value_layout.addWidget(bottle_logo)
-        # value_layout.addSpacing(10)
-        # value_layout.addWidget(increase_button)
         value_layout.addStretch(1)
 
         limit_label = QLabel("สูงสุด 10 ขวดต่อวัน")
@@ -105,7 +106,7 @@ class DepositPage(QWidget):
         main_layout.addStretch(1)
         main_layout.addLayout(footer_layout)
 
-        self.lotus_system.bottleChanged.connect(self.increase_bottle_count)
+        LotusSystem.get_instance().bottle_changed.connect(self.increase_bottle_count)
 
         self.setWindowTitle("Deposit Page")
         self.setStyleSheet("background-color: white;")
@@ -114,11 +115,9 @@ class DepositPage(QWidget):
 
     @Slot(int)
     def increase_bottle_count(self):
-        self.bottle_count += 1
-        self.count_label.setText(str(self.bottle_count))
-        self.timeout_count = 20
+        from System.LotusSystem import LotusSystem
+        self.count_label.setText(str(LotusSystem.get_bottle_count()))
         if self.notice_layout.count() == 1:
-            # Clear the layout if it contains only one widget
             while self.notice_layout.count() > 0:
                 item = self.notice_layout.takeAt(0)
                 widget = item.widget()
@@ -137,7 +136,7 @@ class DepositPage(QWidget):
                         border-radius: 25px;
                     }
                 ''')
-        collect_button.clicked.connect(self.go_to_done_page)
+        collect_button.clicked.connect(go_to_done_page)
 
         donate_button = QPushButton("บริจาค")
         donate_button.setFont(QFont("Lotuss Smart HL", 22, QFont.Bold))
@@ -149,7 +148,7 @@ class DepositPage(QWidget):
                                 border-radius: 25px;
                             }
                         ''')
-        donate_button.clicked.connect(self.go_to_donate_page)
+        donate_button.clicked.connect(go_to_donate_page)
 
         self.notice_layout.addStretch(1)
         self.notice_layout.addWidget(collect_button)
@@ -161,9 +160,3 @@ class DepositPage(QWidget):
         painter = QPainter(self)
         script_dir = os.path.dirname(os.path.abspath(__file__))
         painter.drawPixmap(0, 0, QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg")).scaled(self.width(), self.height() - (self.height() / 7)))
-
-    def go_to_donate_page(self):
-        self.lotus_system.set_page("DonatePage")
-
-    def go_to_done_page(self):
-        self.lotus_system.set_page("DonePage")

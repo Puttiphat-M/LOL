@@ -5,10 +5,9 @@ from PySide6.QtGui import QPixmap, QPainter, QFont
 
 
 class DonatePage(QWidget):
-    def __init__(self, lotus_system):
+    def __init__(self):
         super().__init__()
         self.timeout_count = 5
-        self.lotus_system = lotus_system
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
         self.background_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg"))
@@ -60,9 +59,10 @@ class DonatePage(QWidget):
         self.background_pixmap = self.background_pixmap.scaled(self.width(), self.height() - (self.height() / 7))
 
     def go_to_start_page_after_timeout(self):
+        from System.LotusSystem import LotusSystem
         self.timeout_count -= 1
         if self.timeout_count <= 0:
-            self.lotus_system.set_page("StartPage")
+            LotusSystem.set_page("StartPage")
 
     def paintEvent(self, event):
         painter = QPainter(self)

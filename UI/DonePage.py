@@ -6,9 +6,9 @@ from PySide6.QtGui import QPixmap, QPainter, QFont, Qt, QImage
 
 
 class DonePage(QWidget):
-    def __init__(self, lotus_system):
+    def __init__(self):
         super().__init__()
-        self.lotus_system = lotus_system
+        self.qr_image = None
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
         self.background_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg"))
@@ -48,7 +48,8 @@ class DonePage(QWidget):
                             }
                         ''')
 
-        self.count_label = QLabel(str(self.lotus_system.bottle))
+        from System.LotusSystem import LotusSystem
+        self.count_label = QLabel(str(LotusSystem.bottle))
         self.count_label.setFont(QFont("Lotuss Smart HL", 30))
         self.count_label.setStyleSheet('''
                                     QLabel {
@@ -118,10 +119,12 @@ class DonePage(QWidget):
         painter.drawPixmap(0, 0, self.background_pixmap)
 
     def go_to_start_page(self):
-        self.lotus_system.set_page("StartPage")
+        from System.LotusSystem import LotusSystem
+        LotusSystem.set_page("StartPage")
 
     def show_qr_code(self):
-        self.qr_image = self.lotus_system.get_qr()
+        from System.LotusSystem import LotusSystem
+        self.qr_image = LotusSystem.get_qr()
 
         byte_array = io.BytesIO()
         self.qr_image.save(byte_array, format='PNG')
