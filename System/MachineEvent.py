@@ -16,7 +16,7 @@ class CustomAlert(QDialog):
         self.message_label.setStyleSheet("color: rgb(0, 0, 0);")
         self.message_label.setFont(QFont("Lotuss Smart HL", 18))
         layout.addWidget(self.message_label)
-        ok_button = QPushButton("OK")
+        ok_button = QPushButton("ตกลง")
         ok_button.setStyleSheet('''
             QPushButton {
                 color: rgb(0, 0, 0);
@@ -33,9 +33,8 @@ class CustomAlert(QDialog):
 
 
 class MachineEvent:
-    def __init__(self, master):
-        self.port_name = '/dev/cu.usbmodem1201'
-        self.master = master
+    def __init__(self):
+        self.port_name = '/dev/cu.usbmodem11101'
         self.ser = serial.Serial(self.port_name, 9600)
 
         self.timer = QTimer()
@@ -54,26 +53,31 @@ class MachineEvent:
         self.ser.write(command)
 
     def read_from_arduino(self):
+        from System.LotusSystem import LotusSystem
         if self.ser.in_waiting > 0:
             message = self.ser.readline().decode('utf-8').strip()
-            if self.master.bottle < 10:
+            if LotusSystem.bottle < 10:
                 if message == "has bottle":
                     if self.notification_dialog and self.notification_dialog.isVisible():
                         self.notification_dialog.close()
-                    print("bottle +1")
-                    self.master.increment_bottle()
+                    LotusSystem.increment_bottle()
 
                 elif message == "No bottle":
-                    if self.master.__current is "DepositPage":
-                        self.show_notification("Please insert a bottle.")
-                    print("No bottle")
+                    if LotusSystem.page == "DepositPage":
+                        self.show_notification("กรุณาหยอดขวด")
+            else:
+                if message == "has bottle":
+                    if LotusSystem.page == "DepositPage":
+                        self.show_notification("ใส่ขวดครบจำนวนกำหนดแล้ว")
 
             if message == "stop Program":
                 self.pause()
                 if self.notification_dialog and self.notification_dialog.isVisible():
                     self.notification_dialog.close()
-                self.master.set_page("StartPage")
-                print("stop Program")
+                if LotusSystem.bottle > 0:
+                    LotusSystem.set_page("DonatePage")
+                else:
+                    LotusSystem.set_page("StartPage")
 
     def show_notification(self, message):
         self.notification_dialog = CustomAlert(message)

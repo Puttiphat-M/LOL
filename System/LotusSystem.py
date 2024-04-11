@@ -11,6 +11,7 @@ from PySide6.QtCore import QObject, Signal
 
 
 class LotusSystem(QObject):
+    machine_event = None
     bottle_changed = Signal(int)
     __instance = None
     page = None
@@ -23,7 +24,7 @@ class LotusSystem(QObject):
         else:
             LotusSystem.__instance = self
             self.__current = None
-        LotusSystem.machine_event = MachineEvent(self)
+            LotusSystem.machine_event = MachineEvent()
 
     @staticmethod
     def get_instance():
