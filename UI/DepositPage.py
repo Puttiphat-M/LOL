@@ -1,5 +1,5 @@
 import os
-from PySide6.QtCore import Qt, Slot
+from PySide6.QtCore import Qt, Slot, QTimer
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout
 from PySide6.QtGui import QPixmap, QPainter, QFont
 
@@ -52,6 +52,7 @@ class DepositPage(QWidget):
         bottle_logo.setStyleSheet("background-color: transparent;")
         bottle_pixmap = QPixmap(os.path.join(script_dir, u"../resources/bottle.png"))
         bottle_logo.setPixmap(bottle_pixmap)
+        bottle_logo.setAlignment(Qt.AlignCenter)
 
         value_layout = QHBoxLayout()
         value_layout.addStretch(1)
@@ -107,6 +108,9 @@ class DepositPage(QWidget):
         main_layout.addLayout(footer_layout)
 
         LotusSystem.get_instance().bottle_changed.connect(self.increase_bottle_count)
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.change_page_after_timeout)
+        self.timer.start(1000)
 
         self.setWindowTitle("Deposit Page")
         self.setStyleSheet("background-color: white;")
@@ -160,3 +164,11 @@ class DepositPage(QWidget):
         painter = QPainter(self)
         script_dir = os.path.dirname(os.path.abspath(__file__))
         painter.drawPixmap(0, 0, QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg")).scaled(self.width(), self.height() - (self.height() / 7)))
+
+    def change_page_after_timeout(self):
+        from System.LotusSystem import LotusSystem
+        if LotusSystem.bottle == 10:
+            LotusSystem.time -= 1
+            if LotusSystem.time == 0:
+                LotusSystem.set_page("DonatePage")
+                LotusSystem.time = 10

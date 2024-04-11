@@ -60,7 +60,7 @@ class DonePage(QWidget):
 
         bottle_logo = QLabel()
         bottle_logo.setStyleSheet("background-color: transparent;")
-        bottle_pixmap = QPixmap(os.path.join(script_dir, u"../resources/bottle.png")).scaled(25, 50)
+        bottle_pixmap = QPixmap(os.path.join(script_dir, u"../resources/bottle.png")).scaled(13, 30)
         bottle_logo.setPixmap(bottle_pixmap)
 
         done_button = QPushButton("เสร็จสิ้น")

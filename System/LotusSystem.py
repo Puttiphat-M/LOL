@@ -24,7 +24,7 @@ class LotusSystem(QObject):
         else:
             LotusSystem.__instance = self
             self.__current = None
-            LotusSystem.machine_event = MachineEvent()
+        LotusSystem.machine_event = MachineEvent()
 
     @staticmethod
     def get_instance():
@@ -69,6 +69,8 @@ class LotusSystem(QObject):
     def increment_bottle():
         LotusSystem.bottle += 1
         LotusSystem.get_instance().bottle_changed.emit(LotusSystem.bottle)
+        if LotusSystem.bottle == 10:
+            LotusSystem.machine_event.pause()
 
     @staticmethod
     def get_bottle_count():

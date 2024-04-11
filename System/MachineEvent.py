@@ -65,10 +65,6 @@ class MachineEvent:
                 elif message == "No bottle":
                     if LotusSystem.page == "DepositPage":
                         self.show_notification("กรุณาหยอดขวด")
-            else:
-                if message == "has bottle":
-                    if LotusSystem.page == "DepositPage":
-                        self.show_notification("ใส่ขวดครบจำนวนกำหนดแล้ว")
 
             if message == "stop Program":
                 self.pause()
