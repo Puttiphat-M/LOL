@@ -1,7 +1,7 @@
 import sys
 
 from PySide6.QtWidgets import QApplication
-from MachineEvent import MachineEvent
+# from MachineEvent import MachineEvent
 from UI.StartPage import StartPage
 import UI.DepositPage as DepositPage
 import UI.DonePage as DonePage
@@ -24,7 +24,7 @@ class LotusSystem(QObject):
         else:
             LotusSystem.__instance = self
             self.__current = None
-        LotusSystem.machine_event = MachineEvent()
+        # LotusSystem.machine_event = MachineEvent()
 
     @staticmethod
     def get_instance():
@@ -50,12 +50,12 @@ class LotusSystem(QObject):
             LotusSystem.__current = StartPage()
         elif LotusSystem.page == "DepositPage":
             LotusSystem.__current = DepositPage.DepositPage()
-            LotusSystem.machine_event.turn_on()
+            # LotusSystem.machine_event.turn_on()
         elif LotusSystem.page == "DonePage":
-            LotusSystem.machine_event.pause()
+            # LotusSystem.machine_event.pause()
             LotusSystem.__current = DonePage.DonePage()
         elif LotusSystem.page == "DonatePage":
-            LotusSystem.machine_event.pause()
+            # LotusSystem.machine_event.pause()
             LotusSystem.__current = DonatePage.DonatePage()
         else:
             LotusSystem.__current = None
@@ -70,7 +70,8 @@ class LotusSystem(QObject):
         LotusSystem.bottle += 1
         LotusSystem.get_instance().bottle_changed.emit(LotusSystem.bottle)
         if LotusSystem.bottle == 10:
-            LotusSystem.machine_event.pause()
+            # LotusSystem.machine_event.pause()
+            pass
 
     @staticmethod
     def get_bottle_count():

@@ -1,37 +1,28 @@
 import os
-from PySide6.QtCore import Qt, Slot, QTimer
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout
+from PySide6.QtCore import Qt, Slot
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout, QApplication
 from PySide6.QtGui import QPixmap, QPainter, QFont
-
-
-def go_to_donate_page():
-    from System.LotusSystem import LotusSystem
-    LotusSystem.set_page("DonatePage")
-
-
-def go_to_done_page():
-    from System.LotusSystem import LotusSystem
-    LotusSystem.set_page("DonePage")
 
 
 class DepositPage(QWidget):
     def __init__(self):
         super().__init__()
+        self.set_full_screen()
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
-        info_label = QLabel("หากท่านมี 10 ขวด จะสามารถแลกไข่ได้ 1 ฟอง")
-        info_label.setFont(QFont("Lotuss Smart HL", 22, QFont.Light))
-        info_label.setStyleSheet('''
+        self.info_label = QLabel("หากท่านมี 10 ขวด จะสามารถแลกไข่ได้ 1 ฟอง")
+        self.info_label.setFont(QFont("Lotuss Smart HL", 22, QFont.Light))
+        self.info_label.setStyleSheet('''
                             QLabel {
                                 color: rgb(0, 0, 0);
                                 background-color: transparent;
                             }
                         ''')
-        info_label.setAlignment(Qt.AlignCenter)
+        self.info_label.setAlignment(Qt.AlignCenter)
 
-        X_symbol = QLabel("x")
-        X_symbol.setFont(QFont("Lotuss Smart HL", 45, QFont.Medium))
-        X_symbol.setStyleSheet('''
+        self.x_symbol = QLabel("x")
+        self.x_symbol.setFont(QFont("Lotuss Smart HL", 45, QFont.Medium))
+        self.x_symbol.setStyleSheet('''
                             QLabel {
                                 color: rgb(0, 0, 0);
                                 background-color: transparent;
@@ -48,73 +39,81 @@ class DepositPage(QWidget):
                                     }
                                 ''')
 
-        bottle_logo = QLabel()
-        bottle_logo.setStyleSheet("background-color: transparent;")
-        bottle_pixmap = QPixmap(os.path.join(script_dir, u"../resources/bottle.png"))
-        bottle_logo.setPixmap(bottle_pixmap)
-        bottle_logo.setAlignment(Qt.AlignCenter)
+        self.bottle_logo = QLabel()
+        self.bottle_logo.setStyleSheet("background-color: transparent;")
+        self.bottle_pixmap = QPixmap(os.path.join(script_dir, u"../resources/bottle.png"))
+        self.bottle_logo.setPixmap(self.bottle_pixmap)
+        self.bottle_logo.setAlignment(Qt.AlignCenter)
+
+        donate_button = QPushButton("บริจาค")
+        from System.LotusSystem import LotusSystem
+        donate_button.clicked.connect(LotusSystem.increment_bottle)
 
         value_layout = QHBoxLayout()
         value_layout.addStretch(1)
-        value_layout.addWidget(X_symbol)
-        value_layout.addSpacing(10)
+        value_layout.addWidget(self.x_symbol)
+        value_layout.addSpacing(8)
         value_layout.addWidget(self.count_label)
-        value_layout.addSpacing(10)
-        value_layout.addWidget(bottle_logo)
+        value_layout.addSpacing(8)
+        value_layout.addWidget(self.bottle_logo)
+        value_layout.addSpacing(8)
+        value_layout.addWidget(donate_button)
         value_layout.addStretch(1)
 
-        limit_label = QLabel("สูงสุด 10 ขวดต่อวัน")
-        limit_label.setFont(QFont("Lotuss Smart HL", 22, QFont.Light))
-        limit_label.setStyleSheet('''
+        self.limit_label = QLabel("สูงสุด 10 ขวดต่อวัน")
+        self.limit_label.setFont(QFont("Lotuss Smart HL", 22, QFont.Light))
+        self.limit_label.setStyleSheet('''
                                     QLabel {
                                         color: rgb(0, 0, 0);
                                         background-color: transparent;
                                     }
                                 ''')
-        limit_label.setAlignment(Qt.AlignCenter)
+        self.limit_label.setAlignment(Qt.AlignCenter)
 
-        notice = QLabel("กรุณาหยอดขวด")
-        notice.setFont(QFont("Lotuss Smart HL", 30, QFont.Medium))
-        notice.setStyleSheet('''
+        self.notice = QLabel("กรุณาหยอดขวด")
+        self.notice.setFont(QFont("Lotuss Smart HL", 30, QFont.Medium))
+        self.notice.setStyleSheet('''
                             QLabel {
                                 color: rgb(216, 7, 5);
                                 background-color: transparent;
                             }
                         ''')
-        notice.setAlignment(Qt.AlignCenter)
+        self.notice.setAlignment(Qt.AlignCenter)
 
         self.notice_layout = QHBoxLayout()
-        self.notice_layout.addWidget(notice)
+        self.notice_layout.addWidget(self.notice)
 
         self.logo_label_footer = QLabel()
-        logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LogoLotus 100x30.png"))
-        self.logo_label_footer.setPixmap(logo_pixmap)
+        self.logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/Lotus.png"))
+        self.logo_label_footer.setPixmap(self.logo_pixmap)
         self.logo_label_footer.setStyleSheet("background-color: transparent;")
 
         footer_layout = QHBoxLayout()
         footer_layout.addStretch(1)
         footer_layout.addWidget(self.logo_label_footer)
 
+        self.footer_container = QWidget()
+        self.footer_container.setLayout(footer_layout)
+        self.footer_container.setStyleSheet("background-color: white;")
+
         main_layout = QVBoxLayout(self)
         main_layout.addStretch(1)
-        main_layout.addWidget(info_label)
+        main_layout.addWidget(self.info_label)
         main_layout.addStretch(1)
         main_layout.addLayout(value_layout)
         main_layout.addStretch(1)
-        main_layout.addWidget(limit_label)
+        main_layout.addWidget(self.limit_label)
         main_layout.addStretch(1)
         main_layout.addLayout(self.notice_layout)
         main_layout.addStretch(1)
-        main_layout.addLayout(footer_layout)
+        main_layout.addWidget(self.footer_container)
+        main_layout.setContentsMargins(0, 0, 0, 0)
 
         LotusSystem.get_instance().bottle_changed.connect(self.increase_bottle_count)
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.change_page_after_timeout)
-        self.timer.start(1000)
 
         self.setWindowTitle("Deposit Page")
         self.setStyleSheet("background-color: white;")
-        self.setFixedSize(640, 480)
+        self.setMinimumSize(640, 500)
         self.show()
 
     @Slot(int)
@@ -130,45 +129,79 @@ class DepositPage(QWidget):
             self.update_button_state()
 
     def update_button_state(self):
-        collect_button = QPushButton("สะสมขวด")
-        collect_button.setFont(QFont("Lotuss Smart HL", 22, QFont.Bold))
-        collect_button.setFixedSize(230, 52)
-        collect_button.setStyleSheet('''
+        self.collect_button = QPushButton("สะสมขวด")
+        self.collect_button.setFont(QFont("Lotuss Smart HL", int((self.width() + self.height()) / 55), QFont.Bold))
+
+        self.collect_button.setFixedSize(int(self.width() * 0.2), int(self.height() * 0.08))
+        self.collect_button.setStyleSheet('''
                     QPushButton {
                         color: rgb(255, 255, 255);
                         background-color: rgb(255, 196, 0);
                         border-radius: 25px;
                     }
                 ''')
-        collect_button.clicked.connect(go_to_done_page)
+        self.collect_button.clicked.connect(self.go_to_done_page)
 
-        donate_button = QPushButton("บริจาค")
-        donate_button.setFont(QFont("Lotuss Smart HL", 22, QFont.Bold))
-        donate_button.setFixedSize(230, 52)
-        donate_button.setStyleSheet('''
+        self.donate_button = QPushButton("บริจาค")
+        self.donate_button.setFont(QFont("Lotuss Smart HL", int((self.width() + self.height()) / 55), QFont.Bold))
+        self.donate_button.setFixedSize(int(self.width() * 0.2), int(self.height() * 0.08))
+        self.donate_button.setStyleSheet('''
                             QPushButton {
                                 color: rgb(255, 255, 255);
                                 background-color: rgb(255, 196, 0);
                                 border-radius: 25px;
                             }
                         ''')
-        donate_button.clicked.connect(go_to_donate_page)
+        self.donate_button.clicked.connect(self.go_to_donate_page)
 
         self.notice_layout.addStretch(1)
-        self.notice_layout.addWidget(collect_button)
+        self.notice_layout.addWidget(self.collect_button)
         self.notice_layout.addStretch(1)
-        self.notice_layout.addWidget(donate_button)
+        self.notice_layout.addWidget(self.donate_button)
         self.notice_layout.addStretch(1)
 
     def paintEvent(self, event):
         painter = QPainter(self)
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        painter.drawPixmap(0, 0, QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg")).scaled(self.width(), self.height() - (self.height() / 7)))
+        painter.drawPixmap(0, 0, QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg")).scaled(self.width(), self.height()))
 
-    def change_page_after_timeout(self):
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.updateUI()
+
+    def updateUI(self):
+        width_ratio = self.width() / 640
+        height_ratio = self.height() / 480
+        button_width = int(self.width() * 0.2)
+        button_height = int(self.height() * 0.08)
+        x_size = int(45 * (width_ratio + height_ratio) / 2)
+        amount_size = int(75 * (width_ratio + height_ratio) / 2)
+        bottle_size = int(60 * (width_ratio + height_ratio) / 2)
+        self.x_symbol.setFont(QFont("Lotuss Smart HL", x_size, QFont.Medium))
+        self.count_label.setFont(QFont("Lotuss Smart HL", amount_size))
+        self.bottle_logo.setPixmap(self.bottle_pixmap.scaled(bottle_size, bottle_size, Qt.KeepAspectRatio))
+        self.info_label.setFont(QFont("Lotuss Smart HL", int((self.width() + self.height()) / 55)))
+        self.limit_label.setFont(QFont("Lotuss Smart HL", int((self.width() + self.height()) / 55)))
+        self.logo_label_footer.setPixmap(self.logo_pixmap.scaled(self.width() / 6.4, self.height() / 15, Qt.KeepAspectRatio))
+        if self.notice_layout.count() == 1:
+            self.notice.setFont(QFont("Lotuss Smart HL", int((self.width() + self.height()) / 45), QFont.Medium))
+        if hasattr(self, 'donate_button'):
+            self.donate_button.setFont(QFont("Lotuss Smart HL", int((self.width() + self.height()) / 55), QFont.Bold))
+            self.donate_button.setFixedSize(button_width, button_height)
+        if hasattr(self, 'collect_button'):
+            self.collect_button.setFont(QFont("Lotuss Smart HL", int((self.width() + self.height()) / 55), QFont.Bold))
+            self.collect_button.setFixedSize(button_width, button_height)
+
+    def set_full_screen(self):
+        screen_geometry = QApplication.primaryScreen().geometry()
+        self.setGeometry(screen_geometry)
+
+    def go_to_donate_page(self):
         from System.LotusSystem import LotusSystem
-        if LotusSystem.bottle == 10:
-            LotusSystem.time -= 1
-            if LotusSystem.time == 0:
-                LotusSystem.set_page("DonatePage")
-                LotusSystem.time = 10
+        LotusSystem.set_page("DonatePage")
+        self.close()
+
+    def go_to_done_page(self):
+        from System.LotusSystem import LotusSystem
+        LotusSystem.set_page("DonePage")
+        self.close()

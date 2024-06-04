@@ -1,33 +1,34 @@
 import io
 import os
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QApplication
 from PySide6.QtGui import QPixmap, QPainter, QFont, Qt, QImage
 
 
 class DonePage(QWidget):
     def __init__(self):
         super().__init__()
+        self.set_full_screen()
         self.qr_image = None
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
         self.background_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg"))
 
-        qr_label = QLabel("กรุณาสแกน QR เพื่อสะสมขวด")
-        qr_label.setFont(QFont("Lotuss Smart HL", 22, QFont.Bold))
-        qr_label.setStyleSheet("color: rgb(1, 187, 181);")
-        qr_label.setAlignment(Qt.AlignCenter)
+        self.qr_label = QLabel("กรุณาสแกน QR เพื่อสะสมขวด")
+        self.qr_label.setFont(QFont("Lotuss Smart HL", 22, QFont.Bold))
+        self.qr_label.setStyleSheet("color: rgb(1, 187, 181);")
+        self.qr_label.setAlignment(Qt.AlignCenter)
 
         self.logo_label_footer = QLabel()
-        logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LogoLotus 100x30.png"))
-        self.logo_label_footer.setPixmap(logo_pixmap)
+        self.logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/Lotus.png"))
+        self.logo_label_footer.setPixmap(self.logo_pixmap)
         self.logo_label_footer.setStyleSheet("background-color: transparent;")
 
         self.qr = QLabel(self)
         self.qr.setStyleSheet("background-color: transparent;")
 
         qr_layout = QVBoxLayout()
-        qr_layout.addWidget(qr_label)
+        qr_layout.addWidget(self.qr_label)
         qr_layout.addSpacing(15)
         qr_layout.addWidget(self.qr)
 
@@ -39,9 +40,13 @@ class DonePage(QWidget):
         footer_layout.addStretch(1)
         footer_layout.addWidget(self.logo_label_footer)
 
-        info_label = QLabel("ได้รับขวด")
-        info_label.setFont(QFont("Lotuss Smart HL", 22))
-        info_label.setStyleSheet('''
+        self.footer_container = QWidget()
+        self.footer_container.setLayout(footer_layout)
+        self.footer_container.setStyleSheet("background-color: white;")
+
+        self.info_label = QLabel("ได้รับขวด")
+        self.info_label.setFont(QFont("Lotuss Smart HL", 22))
+        self.info_label.setStyleSheet('''
                             QLabel {
                                 color: rgb(0, 0, 0);
                                 background-color: transparent;
@@ -49,7 +54,7 @@ class DonePage(QWidget):
                         ''')
 
         from System.LotusSystem import LotusSystem
-        self.count_label = QLabel(str(LotusSystem.bottle))
+        self.count_label = QLabel(str(LotusSystem.get_bottle_count()))
         self.count_label.setFont(QFont("Lotuss Smart HL", 30))
         self.count_label.setStyleSheet('''
                                     QLabel {
@@ -58,14 +63,14 @@ class DonePage(QWidget):
                                     }
                                 ''')
 
-        bottle_logo = QLabel()
-        bottle_logo.setStyleSheet("background-color: transparent;")
-        bottle_pixmap = QPixmap(os.path.join(script_dir, u"../resources/bottle.png")).scaled(13, 30)
-        bottle_logo.setPixmap(bottle_pixmap)
+        self.bottle_logo = QLabel()
+        self.bottle_logo.setStyleSheet("background-color: transparent;")
+        self.bottle_pixmap = QPixmap(os.path.join(script_dir, u"../resources/bottle.png"))
+        self.bottle_logo.setPixmap(self.bottle_pixmap)
 
-        done_button = QPushButton("เสร็จสิ้น")
-        done_button.setFont(QFont("Lotuss Smart HL", 20, QFont.Bold))
-        done_button.setStyleSheet('''
+        self.done_button = QPushButton("เสร็จสิ้น")
+        self.done_button.setFont(QFont("Lotuss Smart HL", 20, QFont.Bold))
+        self.done_button.setStyleSheet('''
                             QPushButton {
                                 color: rgb(255, 255, 255);
                                 background-color: rgb(255, 196, 0);
@@ -74,22 +79,22 @@ class DonePage(QWidget):
                                 padding: 5px; /* Adjust padding */
                             }
                         ''')
-        done_button.clicked.connect(self.go_to_start_page)
+        self.done_button.clicked.connect(self.go_to_start_page)
 
         value_layout = QHBoxLayout()
         value_layout.addStretch(1)
-        value_layout.addWidget(info_label)
+        value_layout.addWidget(self.info_label)
         value_layout.addSpacing(5)
         value_layout.addWidget(self.count_label)
         value_layout.addSpacing(5)
-        value_layout.addWidget(bottle_logo)
+        value_layout.addWidget(self.bottle_logo)
         value_layout.addStretch(1)
 
         right_layout = QVBoxLayout()
         right_layout.addSpacing(30)
         right_layout.addLayout(value_layout)
         right_layout.addStretch(1)
-        right_layout.addWidget(done_button)
+        right_layout.addWidget(self.done_button)
 
         leftright_layout = QHBoxLayout()
         leftright_layout.addStretch(1)
@@ -102,21 +107,18 @@ class DonePage(QWidget):
         main_layout.addSpacing(45)
         main_layout.addLayout(leftright_layout)
         main_layout.addStretch(1)
-        main_layout.addLayout(footer_layout)
+        main_layout.addWidget(self.footer_container)
+        main_layout.setContentsMargins(0, self.height() * 0.03, 0, 0)
 
         self.setWindowTitle("Done Page")
-        self.setStyleSheet("background-color: white;")
-        self.setFixedSize(640, 480)
-        self.update_background()
+        self.setMinimumSize(640, 500)
         self.show_qr_code()
         self.show()
 
-    def update_background(self):
-        self.background_pixmap = self.background_pixmap.scaled(self.width(), self.height() - (self.height() / 7))
-
     def paintEvent(self, event):
         painter = QPainter(self)
-        painter.drawPixmap(0, 0, self.background_pixmap)
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        painter.drawPixmap(0, 0, QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg")).scaled(self.width(), self.height()))
 
     def go_to_start_page(self):
         from System.LotusSystem import LotusSystem
@@ -132,7 +134,30 @@ class DonePage(QWidget):
 
         q_image = QImage.fromData(byte_array.getvalue())
 
-        pixmap = QPixmap.fromImage(q_image)
+        self.pixmap = QPixmap.fromImage(q_image)
 
-        self.qr.setPixmap(pixmap)
+        self.qr.setPixmap(self.pixmap)
         self.qr.setAlignment(Qt.AlignCenter)
+
+    def set_full_screen(self):
+        screen_geometry = QApplication.primaryScreen().geometry()
+        self.setGeometry(screen_geometry)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.updateUI()
+
+    def updateUI(self):
+        button_width = int(self.width() * 0.2)
+        button_height = int(self.height() * 0.08)
+        width_ratio = self.width() / 640
+        height_ratio = self.height() / 480
+        bottle_size = int(25 * (width_ratio + height_ratio) / 2)
+        self.bottle_logo.setPixmap(self.bottle_pixmap.scaled(bottle_size, bottle_size, Qt.KeepAspectRatio))
+        self.qr.setPixmap(self.pixmap.scaled(self.width() / 1.8, self.height() / 1.8, Qt.KeepAspectRatio))
+        self.qr_label.setFont(QFont("Lotuss Smart HL", int((self.width() + self.height()) / 50), QFont.Bold))
+        self.count_label.setFont(QFont("Lotuss Smart HL", int((self.width() + self.height()) / 40)))
+        self.info_label.setFont(QFont("Lotuss Smart HL", int((self.width() + self.height()) / 55)))
+        self.logo_label_footer.setPixmap(self.logo_pixmap.scaled(self.width() / 6.4, self.height() / 15, Qt.KeepAspectRatio))
+        self.done_button.setFont(QFont("Lotuss Smart HL", int((self.width() + self.height()) / 55), QFont.Bold))
+        self.done_button.setFixedSize(button_width, button_height)
