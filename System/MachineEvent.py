@@ -53,7 +53,7 @@ class MachineEvent:
         self.ser.write(command)
 
     def read_from_arduino(self):
-        from System.LotusSystem import LotusSystem
+        from LotusSystem import LotusSystem
         if self.ser.in_waiting > 0:
             message = self.ser.readline().decode('utf-8').strip()
             if LotusSystem.bottle < 10:

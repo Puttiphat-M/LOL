@@ -1,18 +1,17 @@
-import os
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QHBoxLayout, QApplication
-from PySide6.QtGui import QPixmap, QPainter, QFont
+from PySide6.QtGui import QFont, QPixmap, QPainter
 
 
 class StartPage(QWidget):
     def __init__(self):
         super().__init__()
+        self.background_pixmap = None
         self.set_full_screen()
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-
         self.logo_label = QLabel()
         self.logo_label.setStyleSheet("background-color: transparent;")
-        self.logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/EggLogo.png"))
+        from UI.Component import resource_path
+        self.logo_pixmap = QPixmap(resource_path("resources/EggLogo.png"))
         self.logo_label.setPixmap(self.logo_pixmap)
         self.logo_label.setAlignment(Qt.AlignCenter)
 
@@ -43,7 +42,7 @@ class StartPage(QWidget):
         ''')
 
         self.logo_label_footer = QLabel()
-        self.lotus_logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/Lotus.png"))
+        self.lotus_logo_pixmap = QPixmap(resource_path("resources/Lotus.png"))
         self.logo_label_footer.setPixmap(self.lotus_logo_pixmap)
         self.logo_label_footer.setStyleSheet("background-color: transparent;")
 
@@ -65,16 +64,15 @@ class StartPage(QWidget):
         main_layout.addWidget(self.footer_container)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.background_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg"))
-
         self.setWindowTitle("Start Page")
         self.setStyleSheet("background-color: white;")
         self.setMinimumSize(640, 500)
         self.show()
 
     def paintEvent(self, event):
+        from UI.Component import resource_path
         painter = QPainter(self)
-        painter.drawPixmap(0, 0, self.background_pixmap.scaled(self.width(), self.height()))
+        painter.drawPixmap(0, 0, QPixmap(resource_path("resources/LotusBackground.jpg")).scaled(self.width(), self.height()))
         painter.end()
 
     def set_full_screen(self):
@@ -95,6 +93,6 @@ class StartPage(QWidget):
         self.logo_label_footer.setPixmap(self.lotus_logo_pixmap.scaled(self.width() / 6.4, self.height() / 15, Qt.KeepAspectRatio))
 
     def go_to_deposit_page(self):
-        from System.LotusSystem import LotusSystem
+        from LotusSystem import LotusSystem
         LotusSystem.set_page("DepositPage")
         self.close()

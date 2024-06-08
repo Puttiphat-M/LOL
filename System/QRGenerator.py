@@ -1,15 +1,12 @@
-import os
 import qrcode
 import jwt
 import time
-from dotenv import load_dotenv
 from typing import Final
 
 
 class QRGenerator:
     def __init__(self):
-        load_dotenv()
-        self.base_url = os.getenv('GEN_QR_URL')
+        self.base_url = 'http://api.lotuss.everyresearch.com/APIs/newBottleTransaction'
         from System.Mac import get_selected_address
         self.secret = str(get_selected_address())
         self.machineID: Final[str] = '1'

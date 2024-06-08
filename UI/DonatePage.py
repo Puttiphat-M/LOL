@@ -1,7 +1,6 @@
-import os
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QApplication
-from PySide6.QtGui import QPixmap, QPainter, QFont
+from PySide6.QtGui import QPixmap, QFont, QPainter
 
 
 class DonatePage(QWidget):
@@ -10,9 +9,8 @@ class DonatePage(QWidget):
         self.set_full_screen()
         self.timeout_count = 5
         font_size = int((self.width() + self.height()) / 10)
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-
-        self.background_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg"))
+        from UI.Component import resource_path
+        self.background_pixmap = QPixmap(resource_path("resources/LotusBackground.jpg"))
 
         self.thankyou_label1 = QLabel("ขอขอบคุณ")
         self.thankyou_label1.setFont(QFont("Lotuss Smart HL", int(font_size), QFont.Bold))
@@ -25,7 +23,7 @@ class DonatePage(QWidget):
         self.thankyou_label2.setAlignment(Qt.AlignCenter)
 
         self.logo_label_footer = QLabel()
-        self.logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/Lotus.png"))
+        self.logo_pixmap = QPixmap(resource_path("resources/Lotus.png"))
         self.logo_label_footer.setPixmap(self.logo_pixmap)
         self.logo_label_footer.setStyleSheet("background-color: transparent;")
 
@@ -60,25 +58,23 @@ class DonatePage(QWidget):
         self.setWindowTitle("Donate Page")
         self.setStyleSheet("background-color: white;")
         self.setMinimumSize(640, 500)
-        self.update_background()
         self.show()
 
-    def update_background(self):
-        self.background_pixmap = self.background_pixmap.scaled(self.width(), self.height())
-
     def go_to_start_page_after_timeout(self):
-        from System.LotusSystem import LotusSystem
+        from LotusSystem import LotusSystem
         self.timeout_count -= 1
         if self.timeout_count <= 0:
             LotusSystem.set_page("StartPage")
 
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        painter.drawPixmap(0, 0, self.background_pixmap)
-
     def set_full_screen(self):
         screen_geometry = QApplication.primaryScreen().geometry()
         self.setGeometry(screen_geometry)
+
+    def paintEvent(self, event):
+        from UI.Component import resource_path
+        painter = QPainter(self)
+        painter.drawPixmap(0, 0, QPixmap(resource_path("resources/LotusBackground.jpg")).scaled(self.width(), self.height()))
+        painter.end()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

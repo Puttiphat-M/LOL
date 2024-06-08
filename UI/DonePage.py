@@ -1,8 +1,7 @@
 import io
-import os
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QApplication
-from PySide6.QtGui import QPixmap, QPainter, QFont, Qt, QImage
+from PySide6.QtGui import QPixmap, QFont, Qt, QImage, QPainter
 
 
 class DonePage(QWidget):
@@ -10,9 +9,8 @@ class DonePage(QWidget):
         super().__init__()
         self.set_full_screen()
         self.qr_image = None
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-
-        self.background_pixmap = QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg"))
+        from UI.Component import resource_path
+        self.background_pixmap = QPixmap(resource_path("resources/LotusBackground.jpg"))
 
         self.qr_label = QLabel("กรุณาสแกน QR เพื่อสะสมขวด")
         self.qr_label.setFont(QFont("Lotuss Smart HL", 22, QFont.Bold))
@@ -20,7 +18,7 @@ class DonePage(QWidget):
         self.qr_label.setAlignment(Qt.AlignCenter)
 
         self.logo_label_footer = QLabel()
-        self.logo_pixmap = QPixmap(os.path.join(script_dir, u"../resources/Lotus.png"))
+        self.logo_pixmap = QPixmap(resource_path("resources/Lotus.png"))
         self.logo_label_footer.setPixmap(self.logo_pixmap)
         self.logo_label_footer.setStyleSheet("background-color: transparent;")
 
@@ -53,7 +51,7 @@ class DonePage(QWidget):
                             }
                         ''')
 
-        from System.LotusSystem import LotusSystem
+        from LotusSystem import LotusSystem
         self.count_label = QLabel(str(LotusSystem.get_bottle_count()))
         self.count_label.setFont(QFont("Lotuss Smart HL", 30))
         self.count_label.setStyleSheet('''
@@ -65,7 +63,7 @@ class DonePage(QWidget):
 
         self.bottle_logo = QLabel()
         self.bottle_logo.setStyleSheet("background-color: transparent;")
-        self.bottle_pixmap = QPixmap(os.path.join(script_dir, u"../resources/bottle.png"))
+        self.bottle_pixmap = QPixmap(resource_path("resources/bottle.png"))
         self.bottle_logo.setPixmap(self.bottle_pixmap)
 
         self.done_button = QPushButton("เสร็จสิ้น")
@@ -115,17 +113,12 @@ class DonePage(QWidget):
         self.show_qr_code()
         self.show()
 
-    def paintEvent(self, event):
-        painter = QPainter(self)
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        painter.drawPixmap(0, 0, QPixmap(os.path.join(script_dir, u"../resources/LotusBackground.jpg")).scaled(self.width(), self.height()))
-
     def go_to_start_page(self):
-        from System.LotusSystem import LotusSystem
+        from LotusSystem import LotusSystem
         LotusSystem.set_page("StartPage")
 
     def show_qr_code(self):
-        from System.LotusSystem import LotusSystem
+        from LotusSystem import LotusSystem
         self.qr_image = LotusSystem.get_qr()
 
         byte_array = io.BytesIO()
@@ -142,6 +135,12 @@ class DonePage(QWidget):
     def set_full_screen(self):
         screen_geometry = QApplication.primaryScreen().geometry()
         self.setGeometry(screen_geometry)
+
+    def paintEvent(self, event):
+        from UI.Component import resource_path
+        painter = QPainter(self)
+        painter.drawPixmap(0, 0, QPixmap(resource_path("resources/LotusBackground.jpg")).scaled(self.width(), self.height()))
+        painter.end()
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
