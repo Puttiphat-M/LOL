@@ -44,10 +44,6 @@ class DepositPage(QWidget):
         self.bottle_logo.setPixmap(self.bottle_pixmap)
         self.bottle_logo.setAlignment(Qt.AlignCenter)
 
-        donate_button = QPushButton("บริจาค")
-        from LotusSystem import LotusSystem
-        donate_button.clicked.connect(LotusSystem.increment_bottle)
-
         value_layout = QHBoxLayout()
         value_layout.addStretch(1)
         value_layout.addWidget(self.x_symbol)
@@ -55,8 +51,6 @@ class DepositPage(QWidget):
         value_layout.addWidget(self.count_label)
         value_layout.addSpacing(8)
         value_layout.addWidget(self.bottle_logo)
-        value_layout.addSpacing(8)
-        value_layout.addWidget(donate_button)
         value_layout.addStretch(1)
 
         self.limit_label = QLabel("สูงสุด 10 ขวดต่อวัน")

@@ -102,9 +102,9 @@ class DonePage(QWidget):
         leftright_layout.addStretch(1)
 
         main_layout = QVBoxLayout(self)
-        main_layout.addSpacing(45)
-        main_layout.addLayout(leftright_layout)
         main_layout.addStretch(1)
+        main_layout.addLayout(leftright_layout)
+        main_layout.addStretch(2)
         main_layout.addWidget(self.footer_container)
         main_layout.setContentsMargins(0, self.height() * 0.03, 0, 0)
 
