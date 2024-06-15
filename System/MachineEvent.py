@@ -4,6 +4,13 @@ from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
 
+def find_arduino_port():
+    ports = serial.tools.list_ports.comports()
+    for port in ports:
+        print(f"Port: {port.device}, Description: {port.description}")
+        return port.device
+    return None
+
 
 class CustomAlert(QDialog):
     def __init__(self, message):
@@ -35,8 +42,12 @@ class CustomAlert(QDialog):
 
 class MachineEvent:
     def __init__(self):
-        self.port_name = '/dev/cu.usbmodem11201'
-        self.ser = serial.Serial(self.port_name, 9600)
+        self.port_name = find_arduino_port()
+        print(self.port_name)
+        if self.port_name is None:
+            raise Exception("No Arduino found")
+        else:
+            self.ser = serial.Serial(self.port_name, 9600)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.read_from_arduino)
