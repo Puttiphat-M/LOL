@@ -86,7 +86,7 @@ class ResetAlert(QDialog):
                 color: rgb(0, 0, 0);
                 background-color: rgb(1, 187, 181);
                 border: 2px solid rgb(0, 0, 0);  /* Add a border for better visibility */
-                border-radius: 15px;  /* Increased border radius */
+                border-radius: 10px;  /* Increased border radius */
                 font-family: "Lotuss Smart HL";
                 font-size: 20px;
                 padding: 10px 20px;  /* Increased padding for a larger button */
@@ -109,6 +109,7 @@ class ResetAlert(QDialog):
 
     def back_to_start_page(self):
         from LotusSystem import LotusSystem
+        self.close()
         LotusSystem.set_page("StartPage")
 
 class MachineEvent:
@@ -141,6 +142,8 @@ class MachineEvent:
         from LotusSystem import LotusSystem
         if self.ser.in_waiting > 0:
             message = self.ser.readline().decode('utf-8').strip()
+
+            print(message)
             if LotusSystem.bottle < 10:
                 if message == "h":
                     if self.notification_dialog and self.notification_dialog.isVisible():
@@ -153,6 +156,7 @@ class MachineEvent:
 
             if message == "s":
                 self.pause()
+                print("Stop laew")
                 if self.notification_dialog and self.notification_dialog.isVisible():
                     self.notification_dialog.close()
                 if LotusSystem.bottle > 0:
@@ -160,8 +164,9 @@ class MachineEvent:
                 else:
                     LotusSystem.set_page("StartPage")
             elif message == "f":
-                self.show_reset_notification("ขออภัยขณะนี้ที่บรรจุขวดเต็ม กรุณาติดต่อพนักงาน")
+                print("Full laew")
                 self.pause()
+                self.show_reset_notification("ขออภัยขณะนี้ที่บรรจุขวดเต็ม กรุณาติดต่อพนักงาน")
 
     def show_notification(self, message):
         self.notification_dialog = CustomAlert(message)

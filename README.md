@@ -45,4 +45,4 @@ pyinstaller --onefile \
 --add-data 'Font/LotussSmartHL-Light.ttf:Font' \
 --add-data 'Font/LotussSmartHL-Medium.ttf:Font' \
 --add-data 'Font/LotussSmartHL-Regular.ttf:Font' \
-LotusSystem.py
+main.py
