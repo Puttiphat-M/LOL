@@ -42,12 +42,20 @@ class CustomAlert(QDialog):
 
 class MachineEvent:
     def __init__(self):
+
         self.port_name = find_arduino_port()
+
         print(self.port_name)
         if self.port_name is None:
             raise Exception("No Arduino found")
         else:
-            self.ser = serial.Serial(self.port_name, 9600)
+            self.ser = serial.Serial(self.port_name, 9600, timeout=0.05)
+
+        if not self.ser.is_open:
+            self.ser.open()
+            print("HE")
+
+        print("open: ", self.ser.is_open)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.read_from_arduino)
