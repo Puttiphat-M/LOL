@@ -8,7 +8,10 @@ def find_arduino_port():
     ports = serial.tools.list_ports.comports()
     for port in ports:
         print(f"Port: {port.device}, Description: {port.description}")
-        return port.device
+    keywords = ["Arduino", "USB", "Serial"]
+    for port in ports:
+        if any(keyword in port.description for keyword in keywords):
+            return port.device
     return None
 
 
@@ -18,7 +21,7 @@ class CustomAlert(QDialog):
         self.setWindowTitle("Alert")
         self.setStyleSheet("background-color: white;")
         layout = QVBoxLayout()
-        self.setFixedSize(300, 150)
+        self.setFixedSize(int(self.width()/2), int(self.height()/2))
         self.message_label = QLabel(message)
         self.message_label.setAlignment(Qt.AlignCenter)
         self.message_label.setStyleSheet("color: rgb(0, 0, 0);")
@@ -49,13 +52,7 @@ class MachineEvent:
         if self.port_name is None:
             raise Exception("No Arduino found")
         else:
-            self.ser = serial.Serial(self.port_name, 9600, timeout=0.05)
-
-        if not self.ser.is_open:
-            self.ser.open()
-            print("HE")
-
-        print("open: ", self.ser.is_open)
+            self.ser = serial.Serial(self.port_name, 9600)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.read_from_arduino)

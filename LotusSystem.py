@@ -1,8 +1,4 @@
-import sys
-
-from PySide6.QtWidgets import QApplication
 from UI.Component import load_fonts
-from System.MachineEvent import MachineEvent
 from UI.StartPage import StartPage
 import UI.DepositPage as DepositPage
 import UI.DonePage as DonePage
@@ -25,7 +21,9 @@ class LotusSystem(QObject):
         else:
             LotusSystem.__instance = self
             self.__current = None
-        LotusSystem.machine_event = MachineEvent()
+            if LotusSystem.machine_event is None:
+                from System.MachineEvent import MachineEvent
+                LotusSystem.machine_event = MachineEvent()
 
     @staticmethod
     def get_instance():
@@ -77,10 +75,3 @@ class LotusSystem(QObject):
     @staticmethod
     def get_bottle_count():
         return LotusSystem.bottle
-
-
-if __name__ == "__main__":
-    app = QApplication([])
-    lotus_system = LotusSystem.get_instance()
-    lotus_system.start()
-    sys.exit(app.exec())
