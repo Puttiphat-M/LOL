@@ -35,28 +35,14 @@ class CustomAlert(QDialog):
 
 class MachineEvent:
     def __init__(self):
-        self.ser = self.detect_arduino()
+        self.port_name = '/dev/cu.usbmodem11201'
+        self.ser = serial.Serial(self.port_name, 9600)
 
         self.timer = QTimer()
         self.timer.timeout.connect(self.read_from_arduino)
         self.timer.start(100)
 
         self.notification_dialog = None
-
-    def detect_arduino(self):
-        ports = serial.tools.list_ports.comports()
-        for port in ports:
-            try:
-                # Attempt to establish a connection to the port
-                ser = serial.Serial(port.device, 9600, timeout=1)
-                ser.write(b'0')  # Send a command to verify connection
-                response = ser.readline().decode('utf-8').strip()
-                if response:  # Check for a valid response
-                    print(f"Arduino detected on port: {port.device}")
-                    return ser
-            except (OSError, serial.SerialException):
-                pass
-        raise Exception("Arduino not found")
 
     def turn_on(self):
         self.send_command(b'1')
@@ -72,16 +58,16 @@ class MachineEvent:
         if self.ser.in_waiting > 0:
             message = self.ser.readline().decode('utf-8').strip()
             if LotusSystem.bottle < 10:
-                if message == "has bottle":
+                if message == "h":
                     if self.notification_dialog and self.notification_dialog.isVisible():
                         self.notification_dialog.close()
                     LotusSystem.increment_bottle()
 
-                elif message == "No bottle":
+                elif message == "n":
                     if LotusSystem.page == "DepositPage":
                         self.show_notification("กรุณาหยอดขวด")
 
-            if message == "stop Program":
+            if message == "s":
                 self.pause()
                 if self.notification_dialog and self.notification_dialog.isVisible():
                     self.notification_dialog.close()
