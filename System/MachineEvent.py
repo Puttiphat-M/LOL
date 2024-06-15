@@ -2,7 +2,8 @@ import serial
 import serial.tools.list_ports
 from PySide6.QtCore import QTimer, Qt
 from PySide6.QtGui import QFont
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton, QApplication, QSizePolicy
+
 
 def find_arduino_port():
     ports = serial.tools.list_ports.comports()
@@ -18,7 +19,6 @@ class CustomAlert(QDialog):
         super().__init__()
         self.setWindowTitle("Alert")
         self.setStyleSheet("background-color: white;")
-        self.setFixedSize(300, 150)  # Fixed size for the dialog
 
         # Layout setup
         layout = QVBoxLayout()
@@ -28,35 +28,88 @@ class CustomAlert(QDialog):
         self.message_label = QLabel(message)
         self.message_label.setAlignment(Qt.AlignCenter)
         self.message_label.setStyleSheet("color: rgb(0, 0, 0);")
-        self.message_label.setFont(QFont("Lotuss Smart HL", 18))
+        self.message_label.setFont(QFont("Lotuss Smart HL", int(self.height() / 10)))  # Font size relative to dialog height
         layout.addWidget(self.message_label)
 
         # Ok button setup
         ok_button = QPushButton("ตกลง")
-        ok_button.setFixedSize(200, 50)  # Fixed size for the button
+        ok_button.setFixedSize(int(self.width() / 2), int(self.height() / 8))  # Fixed height, expanding width
         ok_button.setStyleSheet('''
-                    QPushButton {
-                        color: rgb(0, 0, 0);
-                        background-color: rgb(1, 187, 181);
-                        border-radius: 10px;
-                        font-family: "Lotuss Smart HL";
-                        font-size: 15px;
-                    }
-                    QPushButton:hover {
-                        background-color: rgb(0, 170, 165);
-                    }
-                    QPushButton:pressed {
-                        background-color: rgb(0, 150, 145);
-                    }
-                ''')
+            QPushButton {
+                color: rgb(0, 0, 0);
+                background-color: rgb(1, 187, 181);
+                border: 2px solid rgb(0, 0, 0);  /* Add a border for better visibility */
+                border-radius: 15px;  /* Increased border radius */
+                font-family: "Lotuss Smart HL";
+                font-size: 20px;
+                padding: 10px 20px;  /* Increased padding for a larger button */
+            }
+            QPushButton:pressed {
+                background-color: rgb(0, 150, 145);
+            }
+        ''')
         ok_button.clicked.connect(self.accept)
         layout.addWidget(ok_button, alignment=Qt.AlignCenter)
 
         # Adding margins and spacing
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(10)
+        layout.setContentsMargins(int(self.width() / 10), int(self.height() / 10),
+                                  int(self.width() / 10), int(self.height() / 10))
+        layout.setSpacing(int(self.height() / 20))
+
+        # Set the size of the dialog to be a percentage of the screen size
+        screen_size = QApplication.primaryScreen().size()
+        self.setFixedSize(screen_size.width() * 0.4, screen_size.height() * 0.3)
+
+
+class ResetAlert(QDialog):
+    def __init__(self, message):
+        super().__init__()
+        self.setWindowTitle("Alert")
+        self.setStyleSheet("background-color: white;")
+
+        # Layout setup
+        layout = QVBoxLayout()
         self.setLayout(layout)
 
+        # Message label setup
+        self.message_label = QLabel(message)
+        self.message_label.setAlignment(Qt.AlignCenter)
+        self.message_label.setStyleSheet("color: rgb(0, 0, 0);")
+        self.message_label.setFont(QFont("Lotuss Smart HL", int(self.height() / 15)))  # Font size relative to dialog height
+        layout.addWidget(self.message_label)
+
+        # Ok button setup
+        ok_button = QPushButton("ตกลง")
+        ok_button.setFixedSize(int(self.width() / 2), int(self.height() / 8))  # Fixed height, expanding width
+        ok_button.setStyleSheet('''
+            QPushButton {
+                color: rgb(0, 0, 0);
+                background-color: rgb(1, 187, 181);
+                border: 2px solid rgb(0, 0, 0);  /* Add a border for better visibility */
+                border-radius: 15px;  /* Increased border radius */
+                font-family: "Lotuss Smart HL";
+                font-size: 20px;
+                padding: 10px 20px;  /* Increased padding for a larger button */
+            }
+            QPushButton:pressed {
+                background-color: rgb(0, 150, 145);
+            }
+        ''')
+        ok_button.clicked.connect(self.back_to_start_page)
+        layout.addWidget(ok_button, alignment=Qt.AlignCenter)
+
+        # Adding margins and spacing
+        layout.setContentsMargins(int(self.width() / 10), int(self.height() / 10),
+                                  int(self.width() / 10), int(self.height() / 10))
+        layout.setSpacing(int(self.height() / 20))
+
+        # Set the size of the dialog to be a percentage of the screen size
+        screen_size = QApplication.primaryScreen().size()
+        self.setFixedSize(screen_size.width() * 0.4, screen_size.height() * 0.3)
+
+    def back_to_start_page(self):
+        from LotusSystem import LotusSystem
+        LotusSystem.set_page("StartPage")
 
 class MachineEvent:
     def __init__(self):
@@ -106,8 +159,19 @@ class MachineEvent:
                     LotusSystem.set_page("DonatePage")
                 else:
                     LotusSystem.set_page("StartPage")
+            elif message == "f":
+                self.show_reset_notification("ขออภัยขณะนี้ที่บรรจุขวดเต็ม กรุณาติดต่อพนักงาน")
+                self.pause()
 
     def show_notification(self, message):
         self.notification_dialog = CustomAlert(message)
         self.notification_dialog.setWindowFlags(self.notification_dialog.windowFlags() | Qt.WindowStaysOnTopHint)
         self.notification_dialog.show()
+
+    def show_reset_notification(self, message):
+        self.notification_dialog = ResetAlert(message)
+        self.notification_dialog.setWindowFlags(self.notification_dialog.windowFlags() | Qt.WindowStaysOnTopHint)
+        self.notification_dialog.show()
+
+
+
