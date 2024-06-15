@@ -27,6 +27,7 @@ The project is structured into several Python scripts and modules:
   - `DepositPage.py`: The page where users can deposit their bottles.
   - `DonePage.py`: The page that shows the QR code for the deposited bottles.
   - `DonatePage.py`: The page where users can donate their bottles.
+  - `Component.py`: To load fonts if not exist and Find the path for image
 
 ## Packaging the Application
 
@@ -34,6 +35,7 @@ To package the application into a standalone executable, you can use PyInstaller
 
 ```bash
 pyinstaller --onefile \
+ --hidden-import=qrcode --hidden-import=pyjwt --hidden-import=pyserial --hidden-import=PySide6 --hidden-import=getmac \
 --add-data 'resources/LotusBackground.jpg:resources' \
 --add-data 'resources/Lotus.png:resources' \
 --add-data 'resources/EggLogo.png:resources' \

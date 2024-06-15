@@ -6,8 +6,6 @@ from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
 
 def find_arduino_port():
     ports = serial.tools.list_ports.comports()
-    for port in ports:
-        print(f"Port: {port.device}, Description: {port.description}")
     keywords = ["Arduino", "USB", "Serial"]
     for port in ports:
         if any(keyword in port.description for keyword in keywords):
@@ -20,26 +18,43 @@ class CustomAlert(QDialog):
         super().__init__()
         self.setWindowTitle("Alert")
         self.setStyleSheet("background-color: white;")
+        self.setFixedSize(300, 150)  # Fixed size for the dialog
+
+        # Layout setup
         layout = QVBoxLayout()
-        self.setFixedSize(int(self.width()/2), int(self.height()/2))
+        self.setLayout(layout)
+
+        # Message label setup
         self.message_label = QLabel(message)
         self.message_label.setAlignment(Qt.AlignCenter)
         self.message_label.setStyleSheet("color: rgb(0, 0, 0);")
         self.message_label.setFont(QFont("Lotuss Smart HL", 18))
         layout.addWidget(self.message_label)
+
+        # Ok button setup
         ok_button = QPushButton("ตกลง")
+        ok_button.setFixedSize(200, 50)  # Fixed size for the button
         ok_button.setStyleSheet('''
-            QPushButton {
-                color: rgb(0, 0, 0);
-                background-color: rgb(1, 187, 181);
-                border-radius: 25px;
-                font-family: "Lotuss Smart HL";
-                font-size: 15px;
-                
-            }
-        ''')
+                    QPushButton {
+                        color: rgb(0, 0, 0);
+                        background-color: rgb(1, 187, 181);
+                        border-radius: 10px;
+                        font-family: "Lotuss Smart HL";
+                        font-size: 15px;
+                    }
+                    QPushButton:hover {
+                        background-color: rgb(0, 170, 165);
+                    }
+                    QPushButton:pressed {
+                        background-color: rgb(0, 150, 145);
+                    }
+                ''')
         ok_button.clicked.connect(self.accept)
-        layout.addWidget(ok_button)
+        layout.addWidget(ok_button, alignment=Qt.AlignCenter)
+
+        # Adding margins and spacing
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(10)
         self.setLayout(layout)
 
 

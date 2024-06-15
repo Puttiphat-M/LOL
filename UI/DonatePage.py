@@ -81,7 +81,7 @@ class DonatePage(QWidget):
         self.updateUI()
 
     def updateUI(self):
-        thankyou_font_size = int((self.width() + self.height()) / 15)
+        thankyou_font_size = int((self.width() + self.height()) / 20)
         self.thankyou_label1.setFont(QFont("Lotuss Smart HL", thankyou_font_size, QFont.Bold))
         self.thankyou_label2.setFont(QFont("Lotuss Smart HL", thankyou_font_size, QFont.Bold))
         self.logo_label_footer.setPixmap(
