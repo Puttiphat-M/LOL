@@ -112,6 +112,7 @@ class ResetAlert(QDialog):
         self.close()
         LotusSystem.set_page("StartPage")
 
+
 class MachineEvent:
     def __init__(self):
 
@@ -156,15 +157,14 @@ class MachineEvent:
 
             if message == "s":
                 self.pause()
-                print("Stop laew")
                 if self.notification_dialog and self.notification_dialog.isVisible():
                     self.notification_dialog.close()
                 if LotusSystem.bottle > 0:
                     LotusSystem.set_page("DonatePage")
                 else:
                     LotusSystem.set_page("StartPage")
+
             elif message == "f":
-                print("Full laew")
                 self.pause()
                 self.show_reset_notification("ขออภัยขณะนี้ที่บรรจุขวดเต็ม กรุณาติดต่อพนักงาน")
 
