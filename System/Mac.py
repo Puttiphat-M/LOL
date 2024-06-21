@@ -1,8 +1,8 @@
-from getmac import get_mac_address
+import uuid
 
 
 def get_selected_address():
-    default_mac = get_mac_address()
-    default_mac = default_mac.replace(':', '')
+    default_mac = hex(uuid.getnode())
     return default_mac
+
 
