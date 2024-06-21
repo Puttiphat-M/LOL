@@ -28,7 +28,7 @@ class CustomAlert(QDialog):
         self.message_label = QLabel(message)
         self.message_label.setAlignment(Qt.AlignCenter)
         self.message_label.setStyleSheet("color: rgb(0, 0, 0);")
-        self.message_label.setFont(QFont("Lotuss Smart HL", int(self.width() / 13)))  # Font size relative to dialog height
+        self.message_label.setFont(QFont("Lotuss Smart HL", 20))
         layout.addWidget(self.message_label)
 
         # Ok button setup
@@ -51,14 +51,19 @@ class CustomAlert(QDialog):
         ok_button.clicked.connect(self.accept)
         layout.addWidget(ok_button, alignment=Qt.AlignCenter)
 
-        # Adding margins and spacing
-        layout.setContentsMargins(int(self.width() / 10), int(self.height() / 10),
-                                  int(self.width() / 10), int(self.height() / 10))
-        layout.setSpacing(int(self.height() / 20))
+        layout.setContentsMargins(50, 50, 50, 50)  # Adjust margins as needed
+        layout.setSpacing(20)  # Adjust spacing as needed
 
-        # Set the size of the dialog to be a percentage of the screen size
         screen_size = QApplication.primaryScreen().size()
         self.setFixedSize(screen_size.width() * 0.4, screen_size.height() * 0.3)
+
+        self.adjust_font_size()
+
+    def adjust_font_size(self):
+        dialog_height = self.height()
+        font_size = int(dialog_height / 10)
+        self.message_label.setFont(QFont("Lotuss Smart HL", font_size))
+
 
 
 class ResetAlert(QDialog):
@@ -75,12 +80,11 @@ class ResetAlert(QDialog):
         self.message_label = QLabel(message)
         self.message_label.setAlignment(Qt.AlignCenter)
         self.message_label.setStyleSheet("color: rgb(0, 0, 0);")
-        self.message_label.setFont(QFont("Lotuss Smart HL", int(self.width() / 15)))  # Font size relative to dialog height
+        self.message_label.setFont(QFont("Lotuss Smart HL", 20))
         layout.addWidget(self.message_label)
 
         # Ok button setup
         ok_button = QPushButton("ตกลง")
-        ok_button.setFixedSize(int(self.width() / 2), int(self.width() / 8))  # Fixed height, expanding width
         ok_button.setStyleSheet('''
             QPushButton {
                 color: rgb(0, 0, 0);
@@ -98,14 +102,18 @@ class ResetAlert(QDialog):
         ok_button.clicked.connect(self.back_to_start_page)
         layout.addWidget(ok_button, alignment=Qt.AlignCenter)
 
-        # Adding margins and spacing
-        layout.setContentsMargins(int(self.width() / 10), int(self.height() / 10),
-                                  int(self.width() / 10), int(self.height() / 10))
-        layout.setSpacing(int(self.height() / 20))
+        layout.setContentsMargins(50, 50, 50, 50)  # Adjust margins as needed
+        layout.setSpacing(20)  # Adjust spacing as needed
 
-        # Set the size of the dialog to be a percentage of the screen size
         screen_size = QApplication.primaryScreen().size()
         self.setFixedSize(screen_size.width() * 0.4, screen_size.height() * 0.3)
+
+        self.adjust_font_size()
+
+    def adjust_font_size(self):
+        dialog_height = self.height()
+        font_size = int(dialog_height / 15)
+        self.message_label.setFont(QFont("Lotuss Smart HL", font_size))
 
     def back_to_start_page(self):
         from LotusSystem import LotusSystem

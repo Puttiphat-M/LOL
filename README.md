@@ -35,7 +35,7 @@ To package the application into a standalone executable, you can use PyInstaller
 
 ```bash
 pyinstaller --onefile \
---hidden-import=qrcode --hidden-import=pyjwt --hidden-import=pyserial --hidden-import=PySide6 \
+--hidden-import=qrcode --hidden-import=PyJWT --hidden-import=pyserial --hidden-import=PySide6 --hidden-import=psutil \
 --add-data 'resources/LotusBackground.jpg:resources' \
 --add-data 'resources/Lotus.png:resources' \
 --add-data 'resources/EggLogo.png:resources' \

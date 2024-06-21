@@ -7,8 +7,8 @@ from typing import Final
 class QRGenerator:
     def __init__(self):
         self.base_url = 'http://api.lotuss.everyresearch.com/APIs/newBottleTransaction'
-        from System.Mac import get_selected_address
-        self.secret = str(get_selected_address())
+        from System.Mac import get_mac_address
+        self.secret = str(get_mac_address())
         self.machineID: Final[str] = '1'
 
     def generate_qr(self, bottle):
