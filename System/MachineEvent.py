@@ -28,12 +28,12 @@ class CustomAlert(QDialog):
         self.message_label = QLabel(message)
         self.message_label.setAlignment(Qt.AlignCenter)
         self.message_label.setStyleSheet("color: rgb(0, 0, 0);")
-        self.message_label.setFont(QFont("Lotuss Smart HL", int(self.height() / 10)))  # Font size relative to dialog height
+        self.message_label.setFont(QFont("Lotuss Smart HL", int(self.width() / 13)))  # Font size relative to dialog height
         layout.addWidget(self.message_label)
 
         # Ok button setup
         ok_button = QPushButton("ตกลง")
-        ok_button.setFixedSize(int(self.width() / 2), int(self.height() / 8))  # Fixed height, expanding width
+        ok_button.setFixedSize(int(self.width() / 2), int(self.width() / 8))  # Fixed height, expanding width
         ok_button.setStyleSheet('''
             QPushButton {
                 color: rgb(0, 0, 0);
@@ -75,12 +75,12 @@ class ResetAlert(QDialog):
         self.message_label = QLabel(message)
         self.message_label.setAlignment(Qt.AlignCenter)
         self.message_label.setStyleSheet("color: rgb(0, 0, 0);")
-        self.message_label.setFont(QFont("Lotuss Smart HL", int(self.height() / 15)))  # Font size relative to dialog height
+        self.message_label.setFont(QFont("Lotuss Smart HL", int(self.width() / 15)))  # Font size relative to dialog height
         layout.addWidget(self.message_label)
 
         # Ok button setup
         ok_button = QPushButton("ตกลง")
-        ok_button.setFixedSize(int(self.width() / 2), int(self.height() / 8))  # Fixed height, expanding width
+        ok_button.setFixedSize(int(self.width() / 2), int(self.width() / 8))  # Fixed height, expanding width
         ok_button.setStyleSheet('''
             QPushButton {
                 color: rgb(0, 0, 0);
